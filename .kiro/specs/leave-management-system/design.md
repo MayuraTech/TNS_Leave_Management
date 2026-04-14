@@ -353,7 +353,7 @@ GET /api/admin/reports/export
 - Leave request submitted → Notify manager
 - Leave request approved/denied → Notify employee
 - Leave request cancelled → Notify manager
-- Leave starting in 2 days → Notify employee
+- Leave starting in 2 days → Notify employee and manager
 - User account created → Send temporary password
 - Password reset → Send temporary password
 
