@@ -3,6 +3,10 @@ package com.tns.leavemgmt.security;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.user.entity.User;
 import com.tns.leavemgmt.user.repository.UserRepository;
+import com.tns.leavemgmt.entity.User;
+import com.tns.leavemgmt.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +21,11 @@ import java.util.stream.Collectors;
  * Spring Security UserDetailsService implementation.
  * Loads user by username and enforces isActive=false blocks authentication (Requirement 6.2).
  */
+import java.util.List;
+
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
