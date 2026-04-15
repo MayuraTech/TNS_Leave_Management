@@ -104,4 +104,14 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
             AND r.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.PENDING
             """)
     List<LeaveRequest> findPendingByManagerId(@Param("managerId") Long managerId);
+
+    /**
+     * Finds APPROVED leave requests whose start date falls within the given date range.
+     * Used by the upcoming-leave reminder scheduler (Req 16.3).
+     */
+    @Query("SELECT lr FROM LeaveRequest lr " +
+           "WHERE lr.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.APPROVED " +
+           "AND lr.startDate >= :from AND lr.startDate <= :to")
+    List<LeaveRequest> findApprovedStartingBetween(@Param("from") LocalDate from,
+                                                   @Param("to") LocalDate to);
 }
