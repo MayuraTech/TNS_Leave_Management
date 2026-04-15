@@ -24,7 +24,7 @@ export class AuthService {
   constructor(private api: ApiService, private router: Router) {}
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.api.post<LoginResponse>('/auth/login', credentials).pipe(
+    return this.api.post<LoginResponse>('/api/auth/login', credentials).pipe(
       tap(res => {
         const authUser: AuthUser = { ...res.user, token: res.token, expiresIn: res.expiresIn };
         sessionStorage.setItem(this.TOKEN_KEY, JSON.stringify(authUser));

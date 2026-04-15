@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { ReportService } from '../../../core/services/report.service';
-import { AuditLogEntry, AuditFilters, PagedResponse } from '../../../core/models/report.model';
+import { AuditService, AuditFilters, PagedResponse, AuditLogEntry } from '../../../core/services/audit.service';
+import { UserService } from '../../../core/services/user.service';
 
 interface UserOption {
   id: number;
@@ -12,15 +12,15 @@ interface UserOption {
 }
 
 const ACTION_TYPES = [
-  'LEAVE_SUBMITTED',
-  'LEAVE_APPROVED',
-  'LEAVE_DENIED',
-  'LEAVE_CANCELLED',
-  'BALANCE_ADJUSTED',
-  'USER_CREATED',
-  'USER_UPDATED',
-  'USER_DEACTIVATED',
-  'USER_REACTIVATED',
+  'SUBMITTED',
+  'APPROVED',
+  'DENIED',
+  'CANCELLED',
+  'ADJUSTED',
+  'CREATED',
+  'UPDATED',
+  'DEACTIVATED',
+  'REACTIVATED',
   'PASSWORD_RESET',
   'ROLE_ASSIGNED',
   'ROLE_REVOKED'
@@ -703,7 +703,8 @@ export class AuditReportComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private reportService: ReportService
+    private auditService: AuditService,
+    private userService: UserService
   ) {
     this.filterForm = this.fb.group({
       userId: [''],
@@ -719,8 +720,15 @@ export class AuditReportComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.reportService.getUsers().subscribe({
-      next: (users) => (this.users = users),
+    this.userService.getUsers({ size: 1000 }).subscribe({
+      next: (response) => {
+        this.users = response.content.map(u => ({
+          id: u.id,
+          username: u.username,
+          firstName: u.firstName,
+          lastName: u.lastName
+        }));
+      },
       error: () => { /* non-critical */ }
     });
   }
@@ -740,7 +748,7 @@ export class AuditReportComponent implements OnInit {
       size: this.pageSize
     };
 
-    this.reportService.getAuditLogs(filters).subscribe({
+    this.auditService.getAuditLogs(filters).subscribe({
       next: (page: PagedResponse<AuditLogEntry>) => {
         this.auditLogs = page.content;
         this.totalElements = page.totalElements;
