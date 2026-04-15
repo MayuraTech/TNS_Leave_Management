@@ -211,7 +211,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `ReportingController` exposing: `GET /api/admin/reports/leave-usage`, `GET /api/admin/reports/leave-balances`, `GET /api/admin/reports/pending-requests`, `GET /api/admin/reports/leave-trends`, `GET /api/admin/reports/export`
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 13. Checkpoint — Backend complete
+- [x] 13. Checkpoint — Backend complete
   - Ensure all backend unit and integration tests pass. Verify all API endpoints return correct HTTP status codes for happy paths and error cases. Ask the user if questions arise.
 
 - [x] 14. Angular project structure and core module

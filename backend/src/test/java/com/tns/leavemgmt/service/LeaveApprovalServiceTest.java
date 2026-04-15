@@ -71,7 +71,7 @@ class LeaveApprovalServiceTest {
         LeaveType lt = new LeaveType();
         lt.setId(id);
         lt.setName("Annual Leave");
-        lt.setIsActive(true);
+        lt.setActive(true);
         return lt;
     }
 

@@ -27,14 +27,14 @@ public class EmailNotificationService implements NotificationService {
     // ── User account notifications ────────────────────────────────────────────
 
     @Override
-    public void sendAccountCreatedEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    public void sendAccountCreatedEmail(User user, String temporaryPassword) {
         String subject = "Welcome to Leave Management System – Your Account Details";
         String body = buildAccountCreatedBody(user, temporaryPassword);
         send(user.getEmail(), subject, body);
     }
 
     @Override
-    public void sendPasswordResetEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    public void sendPasswordResetEmail(User user, String temporaryPassword) {
         String subject = "Leave Management System – Password Reset";
         String body = buildPasswordResetBody(user, temporaryPassword);
         send(user.getEmail(), subject, body);
@@ -98,10 +98,10 @@ public class EmailNotificationService implements NotificationService {
 
     // ── HTML template builders ────────────────────────────────────────────────
 
-    private String buildAccountCreatedBody(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    private String buildAccountCreatedBody(User user, String temporaryPassword) {
         return "<html><body>" +
                "<h2>Welcome to the Leave Management System</h2>" +
-               "<p>Hello <strong>" + esc(fullNameUser(user)) + "</strong>,</p>" +
+               "<p>Hello <strong>" + esc(fullName(user)) + "</strong>,</p>" +
                "<p>Your account has been created. Use the credentials below to log in:</p>" +
                "<table><tr><td><strong>Username:</strong></td><td>" + esc(user.getUsername()) + "</td></tr>" +
                "<tr><td><strong>Temporary Password:</strong></td><td>" + esc(temporaryPassword) + "</td></tr></table>" +
@@ -110,10 +110,10 @@ public class EmailNotificationService implements NotificationService {
                "</body></html>";
     }
 
-    private String buildPasswordResetBody(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    private String buildPasswordResetBody(User user, String temporaryPassword) {
         return "<html><body>" +
                "<h2>Password Reset – Leave Management System</h2>" +
-               "<p>Hello <strong>" + esc(fullNameUser(user)) + "</strong>,</p>" +
+               "<p>Hello <strong>" + esc(fullName(user)) + "</strong>,</p>" +
                "<p>Your password has been reset. Use the temporary password below to log in:</p>" +
                "<table><tr><td><strong>Username:</strong></td><td>" + esc(user.getUsername()) + "</td></tr>" +
                "<tr><td><strong>Temporary Password:</strong></td><td>" + esc(temporaryPassword) + "</td></tr></table>" +
@@ -191,14 +191,6 @@ public class EmailNotificationService implements NotificationService {
     // ── Utilities ─────────────────────────────────────────────────────────────
 
     private String fullName(User user) {
-        if (user == null) return "Unknown";
-        String fn = user.getFirstName() != null ? user.getFirstName() : "";
-        String ln = user.getLastName() != null ? user.getLastName() : "";
-        String name = (fn + " " + ln).trim();
-        return name.isEmpty() ? user.getUsername() : name;
-    }
-
-    private String fullNameUser(com.tns.leavemgmt.user.entity.User user) {
         if (user == null) return "Unknown";
         String fn = user.getFirstName() != null ? user.getFirstName() : "";
         String ln = user.getLastName() != null ? user.getLastName() : "";

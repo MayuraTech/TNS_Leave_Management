@@ -76,7 +76,7 @@ public class LeaveApprovalService {
         LeaveRequest saved = leaveRequestRepository.save(request);
 
         // Notify employee and update calendar (Req 8.4, 8.5)
-        eventPublisher.publishEvent(new LeaveRequestApprovedEvent(this, saved));
+        eventPublisher.publishEvent(new LeaveRequestApprovedEvent(this, saved, manager, comments));
 
         return saved;
     }
@@ -119,7 +119,7 @@ public class LeaveApprovalService {
         LeaveRequest saved = leaveRequestRepository.save(request);
 
         // Notify employee (Req 8.4)
-        eventPublisher.publishEvent(new LeaveRequestDeniedEvent(this, saved));
+        eventPublisher.publishEvent(new LeaveRequestDeniedEvent(this, saved, manager, reason));
 
         return saved;
     }

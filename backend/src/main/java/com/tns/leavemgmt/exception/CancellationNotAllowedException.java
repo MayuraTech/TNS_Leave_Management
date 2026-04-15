@@ -7,6 +7,6 @@ package com.tns.leavemgmt.exception;
 public class CancellationNotAllowedException extends LeaveManagementException {
 
     public CancellationNotAllowedException(String message) {
-        super(message, "CANCELLATION_NOT_ALLOWED");
+        super(message, org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

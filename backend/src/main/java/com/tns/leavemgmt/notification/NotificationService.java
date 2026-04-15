@@ -11,9 +11,9 @@ public interface NotificationService {
 
     // ── User account notifications (Req 1.3, 2.3, 6.5) ──────────────────────
 
-    void sendAccountCreatedEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword);
+    void sendAccountCreatedEmail(User user, String temporaryPassword);
 
-    void sendPasswordResetEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword);
+    void sendPasswordResetEmail(User user, String temporaryPassword);
 
     // ── Leave request notifications (Req 16.1 – 16.4) ────────────────────────
 

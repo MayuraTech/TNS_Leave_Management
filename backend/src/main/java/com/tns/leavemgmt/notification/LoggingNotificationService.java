@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 public class LoggingNotificationService implements NotificationService {
 
     @Override
-    public void sendAccountCreatedEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    public void sendAccountCreatedEmail(User user, String temporaryPassword) {
         log.info("EMAIL [Account Created] To: {} | Username: {} | Temporary Password: {}",
                 user.getEmail(), user.getUsername(), temporaryPassword);
     }
 
     @Override
-    public void sendPasswordResetEmail(com.tns.leavemgmt.user.entity.User user, String temporaryPassword) {
+    public void sendPasswordResetEmail(User user, String temporaryPassword) {
         log.info("EMAIL [Password Reset] To: {} | Username: {} | Temporary Password: {}",
                 user.getEmail(), user.getUsername(), temporaryPassword);
     }
