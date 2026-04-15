@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface LeaveAccrualTransactionRepository extends JpaRepository<LeaveAccrualTransaction, Long> {
 
-    List<LeaveAccrualTransaction> findByUser(User user);
+    List<LeaveAccrualTransaction> findByUserId(Long userId);
+
+    List<LeaveAccrualTransaction> findByUserIdAndLeaveTypeId(Long userId, Long leaveTypeId);
 }

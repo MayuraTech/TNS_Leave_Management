@@ -1,15 +1,22 @@
 package com.tns.leavemgmt.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class LeaveManagementException extends RuntimeException {
 
-    private final String errorCode;
+    private final HttpStatus status;
 
-    public LeaveManagementException(String message, String errorCode) {
+    public LeaveManagementException(String message, HttpStatus status) {
         super(message);
-        this.errorCode = errorCode;
+        this.status = status;
     }
 
-    public String getErrorCode() {
-        return errorCode;
+    public LeaveManagementException(String message, HttpStatus status, Throwable cause) {
+        super(message, cause);
+        this.status = status;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 }

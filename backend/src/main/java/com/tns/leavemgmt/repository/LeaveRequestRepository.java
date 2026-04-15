@@ -3,6 +3,7 @@ package com.tns.leavemgmt.repository;
 import com.tns.leavemgmt.entity.LeaveRequest;
 import com.tns.leavemgmt.entity.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -64,12 +65,6 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
                                                          @Param("leaveTypeId") Long leaveTypeId);
 
     /**
-     * Returns all PENDING leave requests across the organization.
-     * Requirements: 13.3
-     */
-    List<LeaveRequest> findByStatus(LeaveRequestStatus status);
-
-    /**
      * Returns APPROVED leave requests within a date range grouped by department.
      * Requirements: 13.5
      */
@@ -78,4 +73,35 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
            "AND lr.startDate <= :endDate AND lr.endDate >= :startDate")
     List<LeaveRequest> findApprovedByDateRange(@Param("startDate") LocalDate startDate,
                                                @Param("endDate") LocalDate endDate);
+    List<LeaveRequest> findByEmployeeId(Long employeeId);
+
+    List<LeaveRequest> findByEmployeeIdAndStatus(Long employeeId, LeaveRequestStatus status);
+
+    List<LeaveRequest> findByStatus(LeaveRequestStatus status);
+
+    @Query("""
+            SELECT r FROM LeaveRequest r
+            WHERE r.employee.id = :employeeId
+            AND r.status != com.tns.leavemgmt.entity.enums.LeaveRequestStatus.CANCELLED
+            AND r.startDate <= :endDate AND r.endDate >= :startDate
+            """)
+    List<LeaveRequest> findOverlappingRequests(
+            @Param("employeeId") Long employeeId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    @Query("""
+            SELECT r FROM LeaveRequest r
+            JOIN ManagerEmployee me ON me.employee.id = r.employee.id
+            WHERE me.manager.id = :managerId AND me.effectiveTo IS NULL
+            """)
+    List<LeaveRequest> findByManagerId(@Param("managerId") Long managerId);
+
+    @Query("""
+            SELECT r FROM LeaveRequest r
+            JOIN ManagerEmployee me ON me.employee.id = r.employee.id
+            WHERE me.manager.id = :managerId AND me.effectiveTo IS NULL
+            AND r.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.PENDING
+            """)
+    List<LeaveRequest> findPendingByManagerId(@Param("managerId") Long managerId);
 }

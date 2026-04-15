@@ -3,6 +3,11 @@ package com.tns.leavemgmt.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import com.tns.leavemgmt.entity.enums.LeaveDurationType;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.enums.SessionType;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

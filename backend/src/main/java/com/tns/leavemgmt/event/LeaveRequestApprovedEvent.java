@@ -1,6 +1,8 @@
 package com.tns.leavemgmt.event;
 
 import com.tns.leavemgmt.entity.LeaveRequest;
+import com.tns.leavemgmt.entity.User;
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 /**
