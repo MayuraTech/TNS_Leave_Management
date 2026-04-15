@@ -7,19 +7,18 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * Published when a manager denies a leave request.
- * Satisfies Requirement 18.2.
+ * Requirement: 8.4
  */
-@Getter
 public class LeaveRequestDeniedEvent extends ApplicationEvent {
 
     private final LeaveRequest leaveRequest;
-    private final User deniedBy;
-    private final String reason;
 
-    public LeaveRequestDeniedEvent(Object source, LeaveRequest leaveRequest, User deniedBy, String reason) {
+    public LeaveRequestDeniedEvent(Object source, LeaveRequest leaveRequest) {
         super(source);
         this.leaveRequest = leaveRequest;
-        this.deniedBy = deniedBy;
-        this.reason = reason;
+    }
+
+    public LeaveRequest getLeaveRequest() {
+        return leaveRequest;
     }
 }

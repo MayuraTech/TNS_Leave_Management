@@ -1,6 +1,8 @@
 package com.tns.leavemgmt.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,10 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "leave_accrual_transactions")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class LeaveAccrualTransaction {
 
     @Id
@@ -27,13 +27,12 @@ public class LeaveAccrualTransaction {
     @JoinColumn(name = "leave_type_id")
     private LeaveType leaveType;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal amount;
 
-    @Column(name = "transaction_type", nullable = false, length = 30)
+    @Column(nullable = false)
     private String transactionType;
 
-    @Column(length = 500)
     private String reason;
 
     @ManyToOne
@@ -41,6 +40,5 @@ public class LeaveAccrualTransaction {
     private User createdBy;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }

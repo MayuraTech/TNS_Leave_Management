@@ -1,0 +1,56 @@
+<div class="data-table-wrapper">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="table-loading">
+    <span>Loading...</span>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!loading" class="table-container">
+    <table class="data-table" *ngIf="data.length > 0; else emptyState">
+      <thead>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            [class.sortable]="col.sortable"
+            [class.sort-asc]="sortColumn === col.key && sortDirection === 'asc'"
+            [class.sort-desc]="sortColumn === col.key && sortDirection === 'desc'"
+            (click)="onSort(col)"
+          >
+            {{ col.label }}
+            <span *ngIf="col.sortable" class="sort-icon">
+              <ng-container *ngIf="sortColumn === col.key">
+                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+              </ng-container>
+              <ng-container *ngIf="sortColumn !== col.key">⇅</ng-container>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let row of pagedData"
+          class="table-row"
+          (click)="onRowClick(row)"
+        >
+          <td *ngFor="let col of columns">{{ getCellValue(row, col) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #emptyState>
+      <div class="empty-state">{{ emptyMessage }}</div>
+    </ng-template>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹</button>
+      <button
+        *ngFor="let p of pages"
+        class="page-btn"
+        [class.active]="p === currentPage"
+        (click)="goToPage(p)"
+      >{{ p }}</button>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">›</button>
+    </div>
+  </div>
+</div>

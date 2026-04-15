@@ -1,0 +1,18 @@
+<div class="date-picker-field">
+  <label *ngIf="label" [for]="id" class="field-label">
+    {{ label }}<span *ngIf="required" class="required-mark">*</span>
+  </label>
+  <input
+    type="date"
+    [id]="id"
+    class="date-input"
+    [value]="value"
+    [min]="minDate"
+    [max]="maxDate"
+    [disabled]="disabled"
+    [required]="required"
+    [placeholder]="placeholder"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+</div>

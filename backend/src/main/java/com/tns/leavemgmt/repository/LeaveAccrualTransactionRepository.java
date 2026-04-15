@@ -1,6 +1,7 @@
 package com.tns.leavemgmt.repository;
 
 import com.tns.leavemgmt.entity.LeaveAccrualTransaction;
+import com.tns.leavemgmt.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

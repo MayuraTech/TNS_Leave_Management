@@ -7,19 +7,18 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * Published when a manager approves a leave request.
- * Satisfies Requirement 18.2.
+ * Requirements: 8.4, 8.5
  */
-@Getter
 public class LeaveRequestApprovedEvent extends ApplicationEvent {
 
     private final LeaveRequest leaveRequest;
-    private final User approvedBy;
-    private final String comments;
 
-    public LeaveRequestApprovedEvent(Object source, LeaveRequest leaveRequest, User approvedBy, String comments) {
+    public LeaveRequestApprovedEvent(Object source, LeaveRequest leaveRequest) {
         super(source);
         this.leaveRequest = leaveRequest;
-        this.approvedBy = approvedBy;
-        this.comments = comments;
+    }
+
+    public LeaveRequest getLeaveRequest() {
+        return leaveRequest;
     }
 }

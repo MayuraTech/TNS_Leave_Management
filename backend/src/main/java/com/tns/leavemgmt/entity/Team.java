@@ -1,28 +1,26 @@
 package com.tns.leavemgmt.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "teams",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "department_id"}))
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "teams")
+@Getter
+@Setter
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false)
     private String name;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
@@ -31,6 +29,5 @@ public class Team {
     private User manager;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }
