@@ -95,7 +95,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `DepartmentController` and `TeamController` for department/team CRUD endpoints
     - Apply `@PreAuthorize("hasRole('ADMINISTRATOR')")` on all endpoints
     - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1_
-  - [ ]* 4.8 Write unit tests for user management service
+  - [x] 4.8 Write unit tests for user management service
     - Test duplicate username/email rejection
     - Test role assignment updates permissions
     - Test deactivation cancels pending leave requests
@@ -117,7 +117,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `LeavePolicyController` with admin endpoints: `POST /api/admin/leave-types`, `PUT /api/admin/leave-types/{id}`, `GET /api/leave-types`
     - Create `PublicHolidayController` with `POST /api/admin/public-holidays`, `POST /api/admin/public-holidays/import`, `GET /api/public-holidays`
     - _Requirements: 10.1, 17.1, 17.5_
-  - [ ]* 5.5 Write unit tests for working-day calculator
+  - [x] 5.5 Write unit tests for working-day calculator
     - Test that weekends are excluded from duration
     - Test that public holidays are excluded from duration
     - Test a range spanning both weekends and holidays
@@ -181,7 +181,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
   - [x] 9.2 Implement manual balance adjustment endpoint
     - Create `POST /api/admin/leave-balance/adjust` and `POST /api/admin/accrual/process` endpoints
     - _Requirements: 15.5_
-  - [ ]* 9.3 Write unit tests for accrual service
+  - [x] 9.3 Write unit tests for accrual service
     - Test accrual adds correct amount to balance
     - Test balance is capped at max carry-over limit
     - Test accrual transaction is recorded with timestamp
@@ -214,27 +214,27 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
 - [ ] 13. Checkpoint — Backend complete
   - Ensure all backend unit and integration tests pass. Verify all API endpoints return correct HTTP status codes for happy paths and error cases. Ask the user if questions arise.
 
-- [ ] 14. Angular project structure and core module
-  - [ ] 14.1 Set up Angular project structure
+- [x] 14. Angular project structure and core module
+  - [x] 14.1 Set up Angular project structure
     - Scaffold `core/`, `features/`, `shared/` module structure as defined in the design
     - Configure `app-routing.module.ts` with lazy-loaded feature routes
     - _Requirements: 14.4_
-  - [ ] 14.2 Implement core auth service and JWT interceptor
+  - [x] 14.2 Implement core auth service and JWT interceptor
     - Create `AuthService` handling login, logout, token storage in sessionStorage, and role extraction
     - Create `JwtInterceptor` attaching `Authorization: Bearer <token>` to all outgoing requests
     - Create `ErrorInterceptor` handling 401 redirects and displaying error messages
     - _Requirements: 14.1, 14.6_
-  - [ ] 14.3 Implement route guards
+  - [x] 14.3 Implement route guards
     - Create `AuthGuard` redirecting unauthenticated users to login
     - Create `RoleGuard` restricting routes by role (admin-only, manager-only)
     - _Requirements: 14.4, 14.5_
-  - [ ] 14.4 Implement shared components
+  - [x] 14.4 Implement shared components
     - Create `HeaderComponent`, `SidebarComponent` with role-aware navigation links
     - Create `DataTableComponent` and `DatePickerComponent` as reusable shared components
     - _Requirements: 14.4_
 
-- [ ] 15. Authentication UI
-  - [ ] 15.1 Implement login component
+- [x] 15. Authentication UI
+  - [x] 15.1 Implement login component
     - Create `LoginComponent` with reactive form accepting username/email and password
     - Display validation errors and account-locked messages
     - On success, store token and redirect to dashboard
@@ -245,19 +245,19 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test failed login displays error message
     - _Requirements: 14.1_
 
-- [ ] 16. User Management UI (Admin only)
-  - [ ] 16.1 Implement user list and create components
+- [x] 16. User Management UI (Admin only)
+  - [x] 16.1 Implement user list and create components
     - Create `UserListComponent` with search/filter by department and status, paginated table
     - Create `UserCreateComponent` reactive form with username, email, first/last name, role multi-select, department, manager fields
     - _Requirements: 1.2, 1.4_
-  - [ ] 16.2 Implement user edit component
+  - [x] 16.2 Implement user edit component
     - Create `UserEditComponent` for updating profile fields, resetting password, activating/deactivating account, modifying roles and manager assignment
     - _Requirements: 2.1, 2.2, 3.1, 3.4, 6.1, 6.4_
-  - [ ] 16.3 Implement department and team management components
+  - [x] 16.3 Implement department and team management components
     - Create `DepartmentManagementComponent` and `TeamManagementComponent` with CRUD forms and lists
     - _Requirements: 4.1, 4.3, 4.6_
 
-- [ ] 17. Leave Request UI
+- [x] 17. Leave Request UI
   - [x] 17.1 Implement leave request form component
     - Create `LeaveRequestFormComponent` reactive form with leave type selector, duration type toggle (Full Day / Half Day / Hourly), conditional fields (session type for half-day, hours input for hourly), date pickers, reason textarea
     - Show available balance for selected leave type
@@ -275,7 +275,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test form is invalid when end date is before start date
     - _Requirements: 7.3, 7.4_
 
-- [ ] 18. Leave Approval UI (Manager only)
+- [x] 18. Leave Approval UI (Manager only)
   - [x] 18.1 Implement pending requests component
     - Create `PendingRequestsComponent` listing all pending requests from direct reports with approve/deny actions
     - Deny action opens a modal requiring a denial reason
@@ -288,7 +288,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Include public holidays on calendar
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 17.4_
 
-- [ ] 19. Leave Policy UI (Admin only)
+- [x] 19. Leave Policy UI (Admin only)
   - [x] 19.1 Implement leave type management component
     - Create `LeaveTypeManagementComponent` with list and form for creating/editing leave types including accrual rate, max carry-over, min notice days
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
@@ -296,16 +296,16 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `HolidayManagementComponent` with list, add form, and CSV import functionality
     - _Requirements: 17.1, 17.5_
 
-- [ ] 20. Reporting UI (Admin only)
-  - [ ] 20.1 Implement leave usage and balance report components
+- [x] 20. Reporting UI (Admin only)
+  - [x] 20.1 Implement leave usage and balance report components
     - Create `LeaveUsageReportComponent` with date range and department filters, tabular results, and CSV export button
     - Create `BalanceReportComponent` showing all employee balances filterable by department
     - _Requirements: 13.1, 13.2, 13.4_
-  - [ ] 20.2 Implement audit report component
+  - [x] 20.2 Implement audit report component
     - Create `AuditReportComponent` with filters for employee, date range, action type; paginated audit log table
     - _Requirements: 18.5_
 
-- [ ] 21. Upcoming leave reminder scheduler
+- [x] 21. Upcoming leave reminder scheduler
   - Implement `ReminderScheduler` using `@Scheduled` to run daily, querying leave requests starting within 2 days and triggering reminder notifications to employees
   - _Requirements: 16.3_
 
