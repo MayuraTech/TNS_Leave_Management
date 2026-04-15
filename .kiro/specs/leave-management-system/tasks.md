@@ -7,53 +7,53 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
 ## Tasks
 
 - [ ] 1. Database schema and Flyway migrations
-  - [ ] 1.1 Create initial Flyway migration for core tables
+  - [x] 1.1 Create initial Flyway migration for core tables
     - Write `V1__initial_schema.sql` creating `users`, `roles`, `user_roles` tables with all columns from the data model
     - _Requirements: 1.1, 14.7_
-  - [ ] 1.2 Create Flyway migration for organizational tables
+  - [x] 1.2 Create Flyway migration for organizational tables
     - Write `V2__org_schema.sql` creating `departments`, `teams`, `manager_employee` tables
     - _Requirements: 4.1, 5.2_
-  - [ ] 1.3 Create Flyway migration for leave tables
+  - [x] 1.3 Create Flyway migration for leave tables
     - Write `V3__leave_schema.sql` creating `leave_types`, `leave_policies`, `leave_requests`, `leave_balances`, `leave_accrual_transactions`, `public_holidays` tables
     - _Requirements: 7.2, 9.1, 10.1, 15.4, 17.1_
-  - [ ] 1.4 Create Flyway migration for audit table
+  - [x] 1.4 Create Flyway migration for audit table
     - Write `V4__audit_schema.sql` creating `audit_logs` table
     - _Requirements: 18.1_
-  - [ ] 1.5 Seed initial roles data
+  - [x] 1.5 Seed initial roles data
     - Write `V5__seed_roles.sql` inserting EMPLOYEE, MANAGER, ADMINISTRATOR roles
     - _Requirements: 3.1_
 
 - [ ] 2. Backend project structure and shared infrastructure
-  - [ ] 2.1 Set up Spring Boot project with dependencies
+  - [x] 2.1 Set up Spring Boot project with dependencies
     - Configure `pom.xml` with Spring Boot 3, Spring Security, Spring Data JPA, Flyway, Spring Mail, JWT library, Lombok, MapStruct
     - Configure `application.yml` with environment variable placeholders for DB, JWT, SMTP
     - _Requirements: 14.1_
-  - [ ] 2.2 Implement exception hierarchy and global exception handler
+  - [x] 2.2 Implement exception hierarchy and global exception handler
     - Create `LeaveManagementException` base class and subclasses: `InsufficientLeaveBalanceException`, `OverlappingLeaveRequestException`, `UnauthorizedAccessException`, `ResourceNotFoundException`, `PolicyViolationException`
     - Implement `GlobalExceptionHandler` with `@RestControllerAdvice` and `ErrorResponse` DTO
     - _Requirements: 7.1, 7.7, 10.5_
-  - [ ] 2.3 Implement JPA entities
+  - [x] 2.3 Implement JPA entities
     - Create `User`, `Role`, `Department`, `Team`, `ManagerEmployee` entities with all fields and relationships
     - Create `LeaveType`, `LeavePolicy`, `LeaveRequest`, `LeaveBalance`, `LeaveAccrualTransaction`, `PublicHoliday` entities
     - Create `AuditLog` entity
     - Create enums: `LeaveDurationType`, `SessionType`, `LeaveRequestStatus`
     - _Requirements: 1.2, 7.2, 7.3, 7.4, 9.1, 18.1_
-  - [ ] 2.4 Implement Spring Data JPA repositories
+  - [x] 2.4 Implement Spring Data JPA repositories
     - Create repositories for all entities with custom query methods: `findByUsername`, `findByEmail`, `findOverlappingRequests`, `findByEmployeeAndStatus`, `findByManagerId`, etc.
     - _Requirements: 7.7, 8.1, 9.5_
 
 - [ ] 3. Authentication and JWT implementation
-  - [ ] 3.1 Implement JWT infrastructure
+  - [x] 3.1 Implement JWT infrastructure
     - Create `JwtTokenProvider` for token generation and validation
     - Create `JwtAuthenticationFilter` to intercept and validate tokens on each request
     - Create `UserDetailsServiceImpl` loading user by username or email
     - _Requirements: 14.1, 14.2, 14.3_
-  - [ ] 3.2 Implement Spring Security configuration
+  - [x] 3.2 Implement Spring Security configuration
     - Create `SecurityConfig` with stateless session, route-level RBAC rules (`/api/admin/**` → ADMINISTRATOR, `/api/manager/**` → MANAGER/ADMINISTRATOR, `/api/leave/**` → all roles)
     - Configure BCrypt password encoder with strength 12
     - Configure CORS for Angular frontend origin
     - _Requirements: 14.4, 14.5, 14.7_
-  - [ ] 3.3 Implement authentication service and controller
+  - [x] 3.3 Implement authentication service and controller
     - Create `AuthenticationService` with `findByUsernameOrEmail`, `handleFailedLogin`, `handleSuccessfulLogin`, `isAccountLocked` methods
     - Create `AuthenticationController` with `POST /api/auth/login`, `POST /api/auth/logout`, `POST /api/auth/refresh` endpoints
     - Enforce 3-attempt lockout for 15 minutes
@@ -195,11 +195,11 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 1.3, 2.3, 6.5_
 
 - [ ] 11. Audit Trail service
-  - [ ] 11.1 Implement audit service and event listener
+  - [x] 11.1 Implement audit service and event listener
     - Create `AuditService.recordAudit` persisting `AuditLog` entries with entity type, action, old/new values, performer, timestamp
     - Create `AuditEventListener` to automatically record audits for: leave request submissions, approvals/denials, balance adjustments, user account changes
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
-  - [ ] 11.2 Implement audit query endpoint
+  - [x] 11.2 Implement audit query endpoint
     - Create `GET /api/admin/audit` with filters: `userId`, `actionType`, `startDate`, `endDate`, pagination
     - _Requirements: 18.5_
 
