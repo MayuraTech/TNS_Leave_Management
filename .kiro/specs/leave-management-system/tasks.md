@@ -5,7 +5,6 @@
 Incremental implementation of the Leave Management System using Spring Boot (Java 21) for the backend and Angular (TypeScript) for the frontend. Tasks are ordered to build foundational layers first (database, auth, core entities), then feature modules, and finally wire everything together.
 
 ## Tasks
-## Tasks
 - [ ] 1. Database schema and Flyway migrations
   - [ ] 1.1 Create initial Flyway migration for core tables
     - Write `V1__initial_schema.sql` creating `users`, `roles`, `user_roles` tables with all columns from the data model
