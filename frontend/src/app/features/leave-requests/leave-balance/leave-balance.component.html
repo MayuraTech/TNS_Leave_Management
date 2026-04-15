@@ -1,0 +1,85 @@
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Leave Balances</h1>
+      <p class="page-subtitle">Your current leave entitlements and accrual rates</p>
+    </div>
+    <button class="btn-refresh" (click)="loadBalances()" [disabled]="loading">
+      <span class="refresh-icon">↻</span> Refresh
+    </button>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div class="cards-grid" *ngIf="loading">
+    <div class="balance-card skeleton" *ngFor="let i of [1,2,3,4]">
+      <div class="skeleton-line wide"></div>
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-stats">
+        <div class="skeleton-stat" *ngFor="let j of [1,2,3]"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-banner" *ngIf="error && !loading">
+    <span class="error-icon">⚠</span>
+    {{ error }}
+    <button class="retry-btn" (click)="loadBalances()">Retry</button>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loading && !error && balances.length === 0">
+    <div class="empty-icon">📊</div>
+    <p class="empty-title">No leave balances found</p>
+    <p class="empty-sub">Contact your administrator if you believe this is an error.</p>
+  </div>
+
+  <!-- Balance cards -->
+  <div class="cards-grid" *ngIf="!loading && !error && balances.length > 0">
+    <div class="balance-card" *ngFor="let balance of balances">
+      <div class="card-header">
+        <h2 class="leave-type-name">{{ balance.leaveTypeName }}</h2>
+        <span class="accrual-badge">
+          +{{ balance.accrualRate }} days/month
+        </span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item available">
+          <span class="stat-value">{{ balance.availableDays }}</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item accrued">
+          <span class="stat-value">{{ balance.accruedDays }}</span>
+          <span class="stat-label">Accrued</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item used">
+          <span class="stat-value">{{ balance.usedDays }}</span>
+          <span class="stat-label">Used</span>
+        </div>
+      </div>
+
+      <!-- Usage progress bar -->
+      <div class="usage-bar-wrapper">
+        <div class="usage-bar-track">
+          <div class="usage-bar-fill" [style.width.%]="getUsagePercent(balance)"></div>
+        </div>
+        <span class="usage-label">{{ getUsagePercent(balance) }}% used</span>
+      </div>
+
+      <!-- Hourly section (if applicable) -->
+      <div class="hourly-section" *ngIf="balance.availableHours != null">
+        <div class="hourly-row">
+          <span class="hourly-label">Available hours</span>
+          <span class="hourly-value">{{ balance.availableHours }}h</span>
+        </div>
+        <div class="hourly-row" *ngIf="balance.usedHours != null">
+          <span class="hourly-label">Used hours</span>
+          <span class="hourly-value">{{ balance.usedHours }}h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
