@@ -297,7 +297,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - _Requirements: 17.1, 17.5_
 
 - [ ] 20. Reporting UI (Admin only)
-  - [ ] 20.1 Implement leave usage and balance report components
+  - [x] 20.1 Implement leave usage and balance report components
     - Create `LeaveUsageReportComponent` with date range and department filters, tabular results, and CSV export button
     - Create `BalanceReportComponent` showing all employee balances filterable by department
     - _Requirements: 13.1, 13.2, 13.4_
