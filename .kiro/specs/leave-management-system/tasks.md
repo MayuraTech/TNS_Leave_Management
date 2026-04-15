@@ -5,7 +5,7 @@
 Incremental implementation of the Leave Management System using Spring Boot (Java 21) for the backend and Angular (TypeScript) for the frontend. Tasks are ordered to build foundational layers first (database, auth, core entities), then feature modules, and finally wire everything together.
 
 ## Tasks
-- [ ] 1. Database schema and Flyway migrations
+- [x] 1. Database schema and Flyway migrations
   - [x] 1.1 Create initial Flyway migration for core tables
     - Write `V1__initial_schema.sql` creating `users`, `roles`, `user_roles` tables with all columns from the data model
     - _Requirements: 1.1, 14.7_
@@ -22,7 +22,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Write `V5__seed_roles.sql` inserting EMPLOYEE, MANAGER, ADMINISTRATOR roles
     - _Requirements: 3.1_
 
-- [ ] 2. Backend project structure and shared infrastructure
+- [x] 2. Backend project structure and shared infrastructure
   - [x] 2.1 Set up Spring Boot project with dependencies
     - Configure `pom.xml` with Spring Boot 3, Spring Security, Spring Data JPA, Flyway, Spring Mail, JWT library, Lombok, MapStruct
     - Configure `application.yml` with environment variable placeholders for DB, JWT, SMTP
@@ -41,7 +41,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create repositories for all entities with custom query methods: `findByUsername`, `findByEmail`, `findOverlappingRequests`, `findByEmployeeAndStatus`, `findByManagerId`, etc.
     - _Requirements: 7.7, 8.1, 9.5_
 
-- [ ] 3. Authentication and JWT implementation
+- [x] 3. Authentication and JWT implementation
   - [x] 3.1 Implement JWT infrastructure
     - Create `JwtTokenProvider` for token generation and validation
     - Create `JwtAuthenticationFilter` to intercept and validate tokens on each request
@@ -64,7 +64,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test `findByUsernameOrEmail` resolves by both username and email
     - _Requirements: 14.1, 14.8_
 
-- [ ] 4. User Management module (admin-only)
+- [x] 4. User Management module (admin-only)
   - [x] 4.1 Implement password service and user creation
     - Create `PasswordService` with BCrypt hashing, verification, and `generateTemporaryPassword`
     - Create `UserService.createUser` validating uniqueness, assigning roles, setting active status, triggering email with temporary password
@@ -95,14 +95,14 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `DepartmentController` and `TeamController` for department/team CRUD endpoints
     - Apply `@PreAuthorize("hasRole('ADMINISTRATOR')")` on all endpoints
     - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1_
-  - [ ]* 4.8 Write unit tests for user management service
+  - [x] 4.8 Write unit tests for user management service
     - Test duplicate username/email rejection
     - Test role assignment updates permissions
     - Test deactivation cancels pending leave requests
     - Test single-team constraint enforcement
     - _Requirements: 1.5, 3.5, 6.3, 4.5_
 
-- [ ] 5. Leave Policy and Public Holiday management
+- [x] 5. Leave Policy and Public Holiday management
   - [x] 5.1 Implement leave type and policy service
     - Create `LeaveTypeService` for CRUD on leave types
     - Create `LeavePolicyService` storing accrual rate, max carry-over days, min notice days per leave type
@@ -117,27 +117,27 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `LeavePolicyController` with admin endpoints: `POST /api/admin/leave-types`, `PUT /api/admin/leave-types/{id}`, `GET /api/leave-types`
     - Create `PublicHolidayController` with `POST /api/admin/public-holidays`, `POST /api/admin/public-holidays/import`, `GET /api/public-holidays`
     - _Requirements: 10.1, 17.1, 17.5_
-  - [ ]* 5.5 Write unit tests for working-day calculator
+  - [x] 5.5 Write unit tests for working-day calculator
     - Test that weekends are excluded from duration
     - Test that public holidays are excluded from duration
     - Test a range spanning both weekends and holidays
     - _Requirements: 17.2, 17.3_
 
-- [ ] 6. Leave Request submission and validation
-  - [ ] 6.1 Implement leave balance service
+- [x] 6. Leave Request submission and validation
+  - [x] 6.1 Implement leave balance service
     - Create `LeaveBalanceService` with methods: `getAvailableBalance`, `deductBalance`, `restoreBalance`, `adjustBalance` (admin manual adjustment)
     - Support fractional days (BigDecimal) for half-day and hourly deductions
     - _Requirements: 7.1, 7.5, 7.6, 9.1, 9.2, 9.3, 15.5_
-  - [ ] 6.2 Implement leave request submission service
+  - [x] 6.2 Implement leave request submission service
     - Create `LeaveRequestService.submitLeaveRequest` validating: sufficient balance, no overlapping requests, min notice period, duration type constraints (HALF_DAY/HOURLY same-day, HOURLY 0.5–8 hours)
     - Assign request to employee's manager via `ManagerRelationshipService`
     - Set status to PENDING and trigger submission notification
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.7, 7.8, 7.9, 10.5_
-  - [ ] 6.3 Implement leave request cancellation service
+  - [x] 6.3 Implement leave request cancellation service
     - Implement `LeaveRequestService.cancelRequest` allowing cancellation before leave starts (restore balance, notify manager, update calendar)
     - Require manager approval for in-progress leave cancellation
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
-  - [ ] 6.4 Implement leave request REST controller
+  - [x] 6.4 Implement leave request REST controller
     - Create `LeaveRequestController` with: `POST /api/leave/requests`, `GET /api/leave/requests`, `GET /api/leave/requests/{id}`, `DELETE /api/leave/requests/{id}`
     - Create `GET /api/leave/balance` endpoint returning all balances with accrual rates
     - _Requirements: 7.1, 9.1, 9.4, 9.5_
@@ -150,12 +150,12 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test cancellation before start restores balance
     - _Requirements: 7.1, 7.5, 7.6, 7.7, 12.2_
 
-- [ ] 7. Leave Approval workflow
-  - [ ] 7.1 Implement leave approval service
+- [x] 7. Leave Approval workflow
+  - [x] 7.1 Implement leave approval service
     - Create `LeaveApprovalService.approveRequest` deducting balance, updating calendar, notifying employee
     - Create `LeaveApprovalService.denyRequest` requiring a denial reason, notifying employee
     - _Requirements: 8.2, 8.3, 8.4, 8.5_
-  - [ ] 7.2 Implement manager approval REST controller
+  - [x] 7.2 Implement manager approval REST controller
     - Create `PUT /api/leave/requests/{id}/approve` and `PUT /api/leave/requests/{id}/deny` endpoints
     - Create `GET /api/manager/pending-requests` returning all pending requests from manager's direct reports
     - Apply `@PreAuthorize("hasAnyRole('MANAGER','ADMINISTRATOR')")` on manager endpoints
@@ -166,14 +166,14 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test manager can only approve requests from their own direct reports
     - _Requirements: 8.2, 8.3, 8.1_
 
-- [ ] 8. Leave Calendar service
-  - [ ] 8.1 Implement leave calendar service and controller
+- [x] 8. Leave Calendar service
+  - [x] 8.1 Implement leave calendar service and controller
     - Create `LeaveCalendarService.getCalendarEntries` returning approved leave for a team filtered by date range and leave type
     - Expose `GET /api/leave/calendar` with query params: `startDate`, `endDate`, `teamId`, `leaveTypeId`
     - Include public holidays in calendar response
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 17.4_
 
-- [ ] 9. Leave Accrual processing
+- [x] 9. Leave Accrual processing
   - [x] 9.1 Implement accrual service and scheduler
     - Create `AccrualService.processAccrual` iterating active employees, applying accrual rate, capping at max carry-over, recording `LeaveAccrualTransaction`
     - Create `AccrualScheduler` using `@Scheduled` to trigger monthly accrual
@@ -181,19 +181,19 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
   - [x] 9.2 Implement manual balance adjustment endpoint
     - Create `POST /api/admin/leave-balance/adjust` and `POST /api/admin/accrual/process` endpoints
     - _Requirements: 15.5_
-  - [ ]* 9.3 Write unit tests for accrual service
+  - [x] 9.3 Write unit tests for accrual service
     - Test accrual adds correct amount to balance
     - Test balance is capped at max carry-over limit
     - Test accrual transaction is recorded with timestamp
     - _Requirements: 15.2, 15.3, 15.4_
 
-- [-] 10. Notification service
-  - [-] 10.1 Implement email notification service
+- [x] 10. Notification service
+  - [x] 10.1 Implement email notification service
     - Create `NotificationService` using Spring Mail to send templated emails for all events: leave submitted (→ manager), approved/denied (→ employee), cancelled (→ manager), upcoming leave reminder (→ employee), account created/password reset (→ user)
     - Create `NotificationEventListener` listening to Spring application events to trigger notifications
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 1.3, 2.3, 6.5_
 
-- [ ] 11. Audit Trail service
+- [x] 11. Audit Trail service
   - [x] 11.1 Implement audit service and event listener
     - Create `AuditService.recordAudit` persisting `AuditLog` entries with entity type, action, old/new values, performer, timestamp
     - Create `AuditEventListener` to automatically record audits for: leave request submissions, approvals/denials, balance adjustments, user account changes
@@ -202,11 +202,11 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `GET /api/admin/audit` with filters: `userId`, `actionType`, `startDate`, `endDate`, pagination
     - _Requirements: 18.5_
 
-- [ ] 12. Reporting service
-  - [ ] 12.1 Implement report generation service
+- [x] 12. Reporting service
+  - [x] 12.1 Implement report generation service
     - Create `LeaveReportService` with methods for: leave usage by type/date range, leave balances by department, pending requests, leave trends by department/team
     - _Requirements: 13.1, 13.2, 13.3, 13.5_
-  - [ ] 12.2 Implement CSV export service and reporting controller
+  - [x] 12.2 Implement CSV export service and reporting controller
     - Create `ReportExportService` serializing report data to CSV
     - Create `ReportingController` exposing: `GET /api/admin/reports/leave-usage`, `GET /api/admin/reports/leave-balances`, `GET /api/admin/reports/pending-requests`, `GET /api/admin/reports/leave-trends`, `GET /api/admin/reports/export`
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
@@ -214,27 +214,27 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
 - [ ] 13. Checkpoint — Backend complete
   - Ensure all backend unit and integration tests pass. Verify all API endpoints return correct HTTP status codes for happy paths and error cases. Ask the user if questions arise.
 
-- [ ] 14. Angular project structure and core module
-  - [ ] 14.1 Set up Angular project structure
+- [x] 14. Angular project structure and core module
+  - [x] 14.1 Set up Angular project structure
     - Scaffold `core/`, `features/`, `shared/` module structure as defined in the design
     - Configure `app-routing.module.ts` with lazy-loaded feature routes
     - _Requirements: 14.4_
-  - [ ] 14.2 Implement core auth service and JWT interceptor
+  - [x] 14.2 Implement core auth service and JWT interceptor
     - Create `AuthService` handling login, logout, token storage in sessionStorage, and role extraction
     - Create `JwtInterceptor` attaching `Authorization: Bearer <token>` to all outgoing requests
     - Create `ErrorInterceptor` handling 401 redirects and displaying error messages
     - _Requirements: 14.1, 14.6_
-  - [ ] 14.3 Implement route guards
+  - [x] 14.3 Implement route guards
     - Create `AuthGuard` redirecting unauthenticated users to login
     - Create `RoleGuard` restricting routes by role (admin-only, manager-only)
     - _Requirements: 14.4, 14.5_
-  - [ ] 14.4 Implement shared components
+  - [x] 14.4 Implement shared components
     - Create `HeaderComponent`, `SidebarComponent` with role-aware navigation links
     - Create `DataTableComponent` and `DatePickerComponent` as reusable shared components
     - _Requirements: 14.4_
 
-- [ ] 15. Authentication UI
-  - [ ] 15.1 Implement login component
+- [x] 15. Authentication UI
+  - [x] 15.1 Implement login component
     - Create `LoginComponent` with reactive form accepting username/email and password
     - Display validation errors and account-locked messages
     - On success, store token and redirect to dashboard
@@ -245,28 +245,28 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test failed login displays error message
     - _Requirements: 14.1_
 
-- [ ] 16. User Management UI (Admin only)
-  - [ ] 16.1 Implement user list and create components
+- [x] 16. User Management UI (Admin only)
+  - [x] 16.1 Implement user list and create components
     - Create `UserListComponent` with search/filter by department and status, paginated table
     - Create `UserCreateComponent` reactive form with username, email, first/last name, role multi-select, department, manager fields
     - _Requirements: 1.2, 1.4_
-  - [ ] 16.2 Implement user edit component
+  - [x] 16.2 Implement user edit component
     - Create `UserEditComponent` for updating profile fields, resetting password, activating/deactivating account, modifying roles and manager assignment
     - _Requirements: 2.1, 2.2, 3.1, 3.4, 6.1, 6.4_
-  - [ ] 16.3 Implement department and team management components
+  - [x] 16.3 Implement department and team management components
     - Create `DepartmentManagementComponent` and `TeamManagementComponent` with CRUD forms and lists
     - _Requirements: 4.1, 4.3, 4.6_
 
-- [ ] 17. Leave Request UI
-  - [ ] 17.1 Implement leave request form component
+- [x] 17. Leave Request UI
+  - [x] 17.1 Implement leave request form component
     - Create `LeaveRequestFormComponent` reactive form with leave type selector, duration type toggle (Full Day / Half Day / Hourly), conditional fields (session type for half-day, hours input for hourly), date pickers, reason textarea
     - Show available balance for selected leave type
     - _Requirements: 7.2, 7.3, 7.4_
-  - [ ] 17.2 Implement leave request list and detail components
+  - [x] 17.2 Implement leave request list and detail components
     - Create `LeaveRequestListComponent` showing employee's own requests with status badges and cancel action
     - Create `LeaveRequestDetailComponent` showing full request details
     - _Requirements: 9.5, 12.1_
-  - [ ] 17.3 Implement leave balance component
+  - [x] 17.3 Implement leave balance component
     - Create `LeaveBalanceComponent` displaying a card per leave type with available, accrued, used days and accrual rate
     - _Requirements: 9.1, 9.4_
   - [ ]* 17.4 Write unit tests for leave request form component
@@ -275,12 +275,12 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test form is invalid when end date is before start date
     - _Requirements: 7.3, 7.4_
 
-- [ ] 18. Leave Approval UI (Manager only)
-  - [ ] 18.1 Implement pending requests component
+- [x] 18. Leave Approval UI (Manager only)
+  - [x] 18.1 Implement pending requests component
     - Create `PendingRequestsComponent` listing all pending requests from direct reports with approve/deny actions
     - Deny action opens a modal requiring a denial reason
     - _Requirements: 8.1, 8.3_
-  - [ ] 18.2 Implement team calendar component
+  - [x] 18.2 Implement team calendar component
     - Create `TeamCalendarComponent` using FullCalendar (or equivalent) to display approved team leave
     - Support filtering by leave type and date range
     - Highlight dates with multiple team members on leave
@@ -288,24 +288,24 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Include public holidays on calendar
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 17.4_
 
-- [ ] 19. Leave Policy UI (Admin only)
-  - [ ] 19.1 Implement leave type management component
+- [x] 19. Leave Policy UI (Admin only)
+  - [x] 19.1 Implement leave type management component
     - Create `LeaveTypeManagementComponent` with list and form for creating/editing leave types including accrual rate, max carry-over, min notice days
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
-  - [ ] 19.2 Implement public holiday management component
+  - [x] 19.2 Implement public holiday management component
     - Create `HolidayManagementComponent` with list, add form, and CSV import functionality
     - _Requirements: 17.1, 17.5_
 
-- [ ] 20. Reporting UI (Admin only)
-  - [ ] 20.1 Implement leave usage and balance report components
+- [x] 20. Reporting UI (Admin only)
+  - [x] 20.1 Implement leave usage and balance report components
     - Create `LeaveUsageReportComponent` with date range and department filters, tabular results, and CSV export button
     - Create `BalanceReportComponent` showing all employee balances filterable by department
     - _Requirements: 13.1, 13.2, 13.4_
-  - [ ] 20.2 Implement audit report component
+  - [x] 20.2 Implement audit report component
     - Create `AuditReportComponent` with filters for employee, date range, action type; paginated audit log table
     - _Requirements: 18.5_
 
-- [ ] 21. Upcoming leave reminder scheduler
+- [x] 21. Upcoming leave reminder scheduler
   - Implement `ReminderScheduler` using `@Scheduled` to run daily, querying leave requests starting within 2 days and triggering reminder notifications to employees
   - _Requirements: 16.3_
 
