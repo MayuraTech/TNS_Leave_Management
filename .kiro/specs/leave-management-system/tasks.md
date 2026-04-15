@@ -301,7 +301,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `LeaveUsageReportComponent` with date range and department filters, tabular results, and CSV export button
     - Create `BalanceReportComponent` showing all employee balances filterable by department
     - _Requirements: 13.1, 13.2, 13.4_
-  - [ ] 20.2 Implement audit report component
+  - [x] 20.2 Implement audit report component
     - Create `AuditReportComponent` with filters for employee, date range, action type; paginated audit log table
     - _Requirements: 18.5_
 

@@ -29,3 +29,39 @@ export interface ReportFilters {
   departmentId?: number;
   leaveTypeId?: number;
 }
+
+export interface AuditLogEntry {
+  id: number;
+  entityType: string;
+  entityId: number;
+  actionType: string;
+  oldValue: string | null;
+  newValue: string | null;
+  performedBy: {
+    id: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  performedAt: string;
+  ipAddress: string | null;
+}
+
+export interface PagedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}
+
+export interface AuditFilters {
+  userId?: number;
+  actionType?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  size?: number;
+}
