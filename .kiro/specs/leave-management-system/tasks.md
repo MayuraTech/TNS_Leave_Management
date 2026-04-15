@@ -141,7 +141,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `LeaveRequestController` with: `POST /api/leave/requests`, `GET /api/leave/requests`, `GET /api/leave/requests/{id}`, `DELETE /api/leave/requests/{id}`
     - Create `GET /api/leave/balance` endpoint returning all balances with accrual rates
     - _Requirements: 7.1, 9.1, 9.4, 9.5_
-  - [ ]* 6.5 Write unit tests for leave request service
+  - [x] 6.5 Write unit tests for leave request service
     - Test submission with sufficient balance succeeds and sets PENDING status
     - Test submission with insufficient balance throws `InsufficientLeaveBalanceException`
     - Test overlapping request throws `OverlappingLeaveRequestException`
@@ -160,7 +160,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `GET /api/manager/pending-requests` returning all pending requests from manager's direct reports
     - Apply `@PreAuthorize("hasAnyRole('MANAGER','ADMINISTRATOR')")` on manager endpoints
     - _Requirements: 8.1, 8.2, 8.3_
-  - [ ]* 7.3 Write unit tests for leave approval service
+  - [x] 7.3 Write unit tests for leave approval service
     - Test approval deducts correct balance and sets APPROVED status
     - Test denial without reason throws validation error
     - Test manager can only approve requests from their own direct reports
@@ -239,7 +239,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Display validation errors and account-locked messages
     - On success, store token and redirect to dashboard
     - _Requirements: 14.1, 14.2, 14.3, 14.8_
-  - [ ]* 15.2 Write unit tests for login component
+  - [x] 15.2 Write unit tests for login component
     - Test form validation rejects empty fields
     - Test successful login navigates to dashboard
     - Test failed login displays error message
