@@ -5,7 +5,7 @@ import com.tns.leavemgmt.dto.LeaveBalanceResponse;
 import com.tns.leavemgmt.dto.LeaveRequestDTO;
 import com.tns.leavemgmt.dto.LeaveRequestResponse;
 import com.tns.leavemgmt.entity.LeaveRequest;
-import com.tns.leavemgmt.entity.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
 import com.tns.leavemgmt.repository.UserRepository;

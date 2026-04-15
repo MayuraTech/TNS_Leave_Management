@@ -1,15 +1,15 @@
 package com.tns.leavemgmt.leave.service;
 
-import com.tns.leavemgmt.leave.entity.LeaveAccrualTransaction;
-import com.tns.leavemgmt.leave.entity.LeaveBalance;
-import com.tns.leavemgmt.leave.entity.LeavePolicy;
-import com.tns.leavemgmt.leave.entity.LeaveType;
+import com.tns.leavemgmt.entity.LeaveAccrualTransaction;
+import com.tns.leavemgmt.entity.LeaveBalance;
+import com.tns.leavemgmt.entity.LeavePolicy;
+import com.tns.leavemgmt.entity.LeaveType;
 import com.tns.leavemgmt.leave.repository.LeaveAccrualTransactionRepository;
 import com.tns.leavemgmt.leave.repository.LeaveBalanceRepository;
 import com.tns.leavemgmt.leave.repository.LeavePolicyRepository;
 import com.tns.leavemgmt.leave.repository.LeaveTypeRepository;
-import com.tns.leavemgmt.user.entity.Role;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.Role;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

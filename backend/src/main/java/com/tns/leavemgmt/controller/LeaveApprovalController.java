@@ -4,7 +4,7 @@ import com.tns.leavemgmt.dto.ApproveLeaveRequest;
 import com.tns.leavemgmt.dto.DenyLeaveRequest;
 import com.tns.leavemgmt.dto.LeaveRequestResponse;
 import com.tns.leavemgmt.entity.LeaveRequest;
-import com.tns.leavemgmt.entity.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;

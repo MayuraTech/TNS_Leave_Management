@@ -2,9 +2,9 @@ package com.tns.leavemgmt.user.service;
 
 import com.tns.leavemgmt.audit.service.AuditService;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
-import com.tns.leavemgmt.user.entity.Department;
-import com.tns.leavemgmt.user.entity.Team;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.Department;
+import com.tns.leavemgmt.entity.Team;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.DepartmentRepository;
 import com.tns.leavemgmt.user.repository.TeamRepository;
 import com.tns.leavemgmt.user.repository.UserRepository;

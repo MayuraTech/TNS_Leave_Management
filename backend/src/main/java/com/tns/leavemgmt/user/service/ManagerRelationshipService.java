@@ -2,8 +2,8 @@ package com.tns.leavemgmt.user.service;
 
 import com.tns.leavemgmt.audit.service.AuditService;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
-import com.tns.leavemgmt.user.entity.ManagerEmployee;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.ManagerEmployee;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.ManagerEmployeeRepository;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.leave.repository;
 
-import com.tns.leavemgmt.leave.entity.LeavePolicy;
+import com.tns.leavemgmt.entity.LeavePolicy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,7 +1,7 @@
 package com.tns.leavemgmt.dto;
 
-import com.tns.leavemgmt.entity.LeaveDurationType;
-import com.tns.leavemgmt.entity.SessionType;
+import com.tns.leavemgmt.entity.enums.LeaveDurationType;
+import com.tns.leavemgmt.entity.enums.SessionType;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -3,7 +3,7 @@ package com.tns.leavemgmt.leave.service;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.leave.dto.CreatePublicHolidayRequest;
 import com.tns.leavemgmt.leave.dto.PublicHolidayResponse;
-import com.tns.leavemgmt.leave.entity.PublicHoliday;
+import com.tns.leavemgmt.entity.PublicHoliday;
 import com.tns.leavemgmt.leave.repository.PublicHolidayRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

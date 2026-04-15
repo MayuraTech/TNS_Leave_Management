@@ -57,7 +57,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `AuthenticationController` with `POST /api/auth/login`, `POST /api/auth/logout`, `POST /api/auth/refresh` endpoints
     - Enforce 3-attempt lockout for 15 minutes
     - _Requirements: 14.1, 14.2, 14.3, 14.6, 14.8_
-  - [ ]* 3.4 Write unit tests for authentication service
+  - [x] 3.4 Write unit tests for authentication service
     - Test successful login resets failed attempts
     - Test failed login increments counter and locks after 3 attempts
     - Test locked account is rejected even with correct credentials

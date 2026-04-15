@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.leave.repository;
 
-import com.tns.leavemgmt.leave.entity.LeaveType;
+import com.tns.leavemgmt.entity.LeaveType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
