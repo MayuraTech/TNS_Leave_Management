@@ -1,5 +1,8 @@
 package com.tns.leavemgmt.security;
 
+import com.tns.leavemgmt.exception.ResourceNotFoundException;
+import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.user.repository.UserRepository;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +12,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * Spring Security UserDetailsService implementation.
+ * Loads user by username and enforces isActive=false blocks authentication (Requirement 6.2).
+ */
 import java.util.List;
 
 @Slf4j
@@ -19,25 +30,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Accepts either a username or an email address.
-     */
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(usernameOrEmail)
-                .or(() -> userRepository.findByEmail(usernameOrEmail))
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User not found: " + usernameOrEmail));
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+        Set<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
-                .toList();
+                .collect(Collectors.toSet());
 
-        return new CustomUserDetails(
-                user.getId(),
+        // Passing isActive as the 'enabled' flag — deactivated users cannot authenticate (Req 6.2)
+        return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPasswordHash(),
-                Boolean.TRUE.equals(user.getIsActive()),
+                user.getIsActive(),   // enabled
+                true,                 // accountNonExpired
+                true,                 // credentialsNonExpired
+                true,                 // accountNonLocked
                 authorities
         );
     }

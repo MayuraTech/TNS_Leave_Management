@@ -1,14 +1,24 @@
 package com.tns.leavemgmt.exception;
 
-import org.springframework.http.HttpStatus;
-
-public class ResourceNotFoundException extends LeaveManagementException {
+public class ResourceNotFoundException extends RuntimeException {
 
     public ResourceNotFoundException(String message) {
-        super(message, HttpStatus.NOT_FOUND);
+        super(message);
     }
 
-    public ResourceNotFoundException(String resourceName, Long id) {
-        super(resourceName + " not found with id: " + id, HttpStatus.NOT_FOUND);
+    public static ResourceNotFoundException forUser(Long userId) {
+        return new ResourceNotFoundException("User not found with id: " + userId);
+    }
+
+    public static ResourceNotFoundException forRole(String roleName) {
+        return new ResourceNotFoundException("Role not found: " + roleName);
+    }
+
+    public static ResourceNotFoundException forDepartment(Long departmentId) {
+        return new ResourceNotFoundException("Department not found with id: " + departmentId);
+    }
+
+    public static ResourceNotFoundException forTeam(Long teamId) {
+        return new ResourceNotFoundException("Team not found with id: " + teamId);
     }
 }

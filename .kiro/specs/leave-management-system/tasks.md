@@ -5,7 +5,6 @@
 Incremental implementation of the Leave Management System using Spring Boot (Java 21) for the backend and Angular (TypeScript) for the frontend. Tasks are ordered to build foundational layers first (database, auth, core entities), then feature modules, and finally wire everything together.
 
 ## Tasks
-
 - [ ] 1. Database schema and Flyway migrations
   - [x] 1.1 Create initial Flyway migration for core tables
     - Write `V1__initial_schema.sql` creating `users`, `roles`, `user_roles` tables with all columns from the data model
@@ -66,32 +65,32 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - _Requirements: 14.1, 14.8_
 
 - [ ] 4. User Management module (admin-only)
-  - [ ] 4.1 Implement password service and user creation
+  - [x] 4.1 Implement password service and user creation
     - Create `PasswordService` with BCrypt hashing, verification, and `generateTemporaryPassword`
     - Create `UserService.createUser` validating uniqueness, assigning roles, setting active status, triggering email with temporary password
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6_
-  - [ ] 4.2 Implement user profile update and password reset
+  - [x] 4.2 Implement user profile update and password reset
     - Implement `UserService.updateUser` for profile fields (firstName, lastName, phone, emergencyContact, address, email, username)
     - Implement `UserService.resetPassword` generating and emailing a new temporary password
     - Record audit log entry on every profile change
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  - [ ] 4.3 Implement role assignment and revocation
+  - [x] 4.3 Implement role assignment and revocation
     - Implement `RoleService.assignRoles` and `RoleService.revokeRole` with immediate permission effect
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
-  - [ ] 4.4 Implement account activation and deactivation
+  - [x] 4.4 Implement account activation and deactivation
     - Implement `UserService.deactivateUser` blocking authentication and cancelling pending leave requests
     - Implement `UserService.reactivateUser` sending notification email with password reset instructions
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
-  - [ ] 4.5 Implement department and team management
+  - [x] 4.5 Implement department and team management
     - Implement `DepartmentService` CRUD and `TeamService` CRUD
     - Enforce auto-assignment of user to team's department when added to a team
     - Enforce single-team constraint per user
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
-  - [ ] 4.6 Implement manager-employee relationship management
+  - [x] 4.6 Implement manager-employee relationship management
     - Implement `ManagerRelationshipService` creating/modifying `ManagerEmployee` records
     - Enforce single-manager constraint per employee
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
-  - [ ] 4.7 Implement User Management REST controller
+  - [x] 4.7 Implement User Management REST controller
     - Create `UserManagementController` exposing all admin user endpoints: `POST /api/admin/users`, `PUT /api/admin/users/{id}`, `POST /api/admin/users/{id}/roles`, `POST /api/admin/users/{id}/deactivate`, `POST /api/admin/users/{id}/reset-password`, `GET /api/admin/users`, `PUT /api/admin/users/{id}/manager`
     - Create `DepartmentController` and `TeamController` for department/team CRUD endpoints
     - Apply `@PreAuthorize("hasRole('ADMINISTRATOR')")` on all endpoints
@@ -104,17 +103,17 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - _Requirements: 1.5, 3.5, 6.3, 4.5_
 
 - [ ] 5. Leave Policy and Public Holiday management
-  - [ ] 5.1 Implement leave type and policy service
+  - [x] 5.1 Implement leave type and policy service
     - Create `LeaveTypeService` for CRUD on leave types
     - Create `LeavePolicyService` storing accrual rate, max carry-over days, min notice days per leave type
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
-  - [ ] 5.2 Implement public holiday service
+  - [x] 5.2 Implement public holiday service
     - Create `PublicHolidayService` for CRUD and CSV import of public holidays
     - _Requirements: 17.1, 17.5_
-  - [ ] 5.3 Implement working-day calculation utility
+  - [x] 5.3 Implement working-day calculation utility
     - Create `WorkingDayCalculator` utility that excludes weekends and public holidays when computing leave duration
     - _Requirements: 17.2, 17.3_
-  - [ ] 5.4 Implement leave policy and public holiday REST controllers
+  - [x] 5.4 Implement leave policy and public holiday REST controllers
     - Create `LeavePolicyController` with admin endpoints: `POST /api/admin/leave-types`, `PUT /api/admin/leave-types/{id}`, `GET /api/leave-types`
     - Create `PublicHolidayController` with `POST /api/admin/public-holidays`, `POST /api/admin/public-holidays/import`, `GET /api/public-holidays`
     - _Requirements: 10.1, 17.1, 17.5_
@@ -175,11 +174,11 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 17.4_
 
 - [ ] 9. Leave Accrual processing
-  - [ ] 9.1 Implement accrual service and scheduler
+  - [x] 9.1 Implement accrual service and scheduler
     - Create `AccrualService.processAccrual` iterating active employees, applying accrual rate, capping at max carry-over, recording `LeaveAccrualTransaction`
     - Create `AccrualScheduler` using `@Scheduled` to trigger monthly accrual
     - _Requirements: 15.1, 15.2, 15.3, 15.4_
-  - [ ] 9.2 Implement manual balance adjustment endpoint
+  - [x] 9.2 Implement manual balance adjustment endpoint
     - Create `POST /api/admin/leave-balance/adjust` and `POST /api/admin/accrual/process` endpoints
     - _Requirements: 15.5_
   - [ ]* 9.3 Write unit tests for accrual service
@@ -188,8 +187,8 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test accrual transaction is recorded with timestamp
     - _Requirements: 15.2, 15.3, 15.4_
 
-- [ ] 10. Notification service
-  - [ ] 10.1 Implement email notification service
+- [-] 10. Notification service
+  - [-] 10.1 Implement email notification service
     - Create `NotificationService` using Spring Mail to send templated emails for all events: leave submitted (→ manager), approved/denied (→ employee), cancelled (→ manager), upcoming leave reminder (→ employee), account created/password reset (→ user)
     - Create `NotificationEventListener` listening to Spring application events to trigger notifications
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 1.3, 2.3, 6.5_
