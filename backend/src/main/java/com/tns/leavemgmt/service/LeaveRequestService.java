@@ -2,6 +2,8 @@ package com.tns.leavemgmt.service;
 
 import com.tns.leavemgmt.dto.LeaveRequestDTO;
 import com.tns.leavemgmt.entity.*;
+import com.tns.leavemgmt.entity.enums.LeaveDurationType;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.event.LeaveRequestCancelledEvent;
 import com.tns.leavemgmt.event.LeaveRequestSubmittedEvent;
 import com.tns.leavemgmt.exception.CancellationNotAllowedException;

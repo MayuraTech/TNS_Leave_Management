@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/leave_management}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:}
+    url: ${DB_URL:jdbc:postgresql://10.0.2.134:5432/Interns%20Training%20Database}
+    username: ${DB_USERNAME:Saravanan}
+    password: ${DB_PASSWORD:@dmin@123}
     driver-class-name: org.postgresql.Driver
 
   jpa:

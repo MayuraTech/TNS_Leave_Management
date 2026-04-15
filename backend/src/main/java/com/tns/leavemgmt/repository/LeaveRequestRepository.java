@@ -15,19 +15,6 @@ import java.util.Optional;
 @Repository
 public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long> {
 
-    /**
-     * Finds overlapping leave requests for an employee.
-     * A request overlaps if: existing.startDate <= newEndDate AND existing.endDate >= newStartDate
-     * Only considers PENDING or APPROVED requests (excludes CANCELLED/DENIED).
-     */
-    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.employee.id = :employeeId " +
-           "AND lr.status IN (com.tns.leavemgmt.entity.LeaveRequestStatus.PENDING, " +
-           "                  com.tns.leavemgmt.entity.LeaveRequestStatus.APPROVED) " +
-           "AND lr.startDate <= :endDate AND lr.endDate >= :startDate")
-    List<LeaveRequest> findOverlappingRequests(@Param("employeeId") Long employeeId,
-                                               @Param("startDate") LocalDate startDate,
-                                               @Param("endDate") LocalDate endDate);
-
     List<LeaveRequest> findByEmployee(User employee);
 
     List<LeaveRequest> findByEmployeeAndStatus(User employee, LeaveRequestStatus status);

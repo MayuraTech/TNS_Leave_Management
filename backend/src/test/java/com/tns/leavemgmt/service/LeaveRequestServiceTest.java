@@ -2,6 +2,8 @@ package com.tns.leavemgmt.service;
 
 import com.tns.leavemgmt.dto.LeaveRequestDTO;
 import com.tns.leavemgmt.entity.*;
+import com.tns.leavemgmt.entity.enums.LeaveDurationType;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.exception.InsufficientLeaveBalanceException;
 import com.tns.leavemgmt.exception.OverlappingLeaveRequestException;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
@@ -66,7 +68,7 @@ class LeaveRequestServiceTest {
         LeaveType lt = new LeaveType();
         lt.setId(id);
         lt.setName("Annual Leave");
-        lt.setIsActive(true);
+        lt.setActive(true);
         return lt;
     }
 
