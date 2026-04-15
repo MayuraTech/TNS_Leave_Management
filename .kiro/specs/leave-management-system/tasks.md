@@ -309,17 +309,17 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
   - Implement `ReminderScheduler` using `@Scheduled` to run daily, querying leave requests starting within 2 days and triggering reminder notifications to employees
   - _Requirements: 16.3_
 
-- [ ] 22. Integration and wiring
-  - [ ] 22.1 Wire Angular services to backend API endpoints
+- [x] 22. Integration and wiring
+  - [x] 22.1 Wire Angular services to backend API endpoints
     - Create Angular services (`UserService`, `LeaveService`, `LeaveBalanceService`, `ReportService`, `AuditService`, `PolicyService`) calling the correct REST endpoints
     - Ensure all services use `JwtInterceptor` and handle errors via `ErrorInterceptor`
     - _Requirements: All_
-  - [ ] 22.2 Wire role-based navigation and route guards
+  - [x] 22.2 Wire role-based navigation and route guards
     - Apply `AuthGuard` to all protected routes
     - Apply `RoleGuard` to admin-only and manager-only routes
     - Hide navigation items in sidebar based on user roles
     - _Requirements: 14.4, 14.5_
-  - [ ] 22.3 Wire audit logging into all mutating operations
+  - [x] 22.3 Wire audit logging into all mutating operations
     - Ensure `AuditEventListener` captures all required events: user CRUD, leave request lifecycle, balance adjustments
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
 

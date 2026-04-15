@@ -94,64 +94,76 @@ export class UserService {
     if (params.departmentId !== undefined) queryParams['departmentId'] = params.departmentId;
     if (params.status) queryParams['status'] = params.status;
     if (params.search) queryParams['search'] = params.search;
-    return this.api.get<PagedResponse<User>>('/admin/users', queryParams);
+    return this.api.get<PagedResponse<User>>('/api/admin/users', queryParams);
   }
 
   createUser(request: CreateUserRequest): Observable<User> {
-    return this.api.post<User>('/admin/users', request);
+    return this.api.post<User>('/api/admin/users', request);
   }
 
   getDepartments(): Observable<Department[]> {
-    return this.api.get<Department[]>('/admin/departments');
+    return this.api.get<Department[]>('/api/admin/departments');
   }
 
   getManagers(): Observable<User[]> {
-    return this.api.get<PagedResponse<User>>('/admin/users', { status: 'active', role: 'MANAGER' }).pipe(
+    return this.api.get<PagedResponse<User>>('/api/admin/users', { status: 'active', role: 'MANAGER' }).pipe(
       map((res: PagedResponse<User>) => res.content)
     );
   }
 
   getUserById(id: number): Observable<User> {
-    return this.api.get<User>(`/admin/users/${id}`);
+    return this.api.get<User>(`/api/admin/users/${id}`);
   }
 
   updateUser(id: number, request: UpdateUserRequest): Observable<User> {
-    return this.api.put<User>(`/admin/users/${id}`, request);
+    return this.api.put<User>(`/api/admin/users/${id}`, request);
   }
 
   resetPassword(id: number, request: ResetPasswordRequest): Observable<void> {
-    return this.api.post<void>(`/admin/users/${id}/reset-password`, request);
+    return this.api.post<void>(`/api/admin/users/${id}/reset-password`, request);
   }
 
   setUserStatus(id: number, active: boolean): Observable<User> {
-    return this.api.put<User>(`/admin/users/${id}/status`, { active });
+    return this.api.put<User>(`/api/admin/users/${id}/status`, { active });
+  }
+
+  deactivateUser(id: number): Observable<void> {
+    return this.api.post<void>(`/api/admin/users/${id}/deactivate`, {});
+  }
+
+  assignManager(userId: number, managerId: number): Observable<void> {
+    return this.api.put<void>(`/api/admin/users/${userId}/manager`, { managerId });
+  }
+
+  assignRoles(userId: number, roles: string[]): Observable<User> {
+    return this.api.post<User>(`/api/admin/users/${userId}/roles`, { roles });
   }
 
   createDepartment(request: CreateDepartmentRequest): Observable<Department> {
-    return this.api.post<Department>('/admin/departments', request);
+    return this.api.post<Department>('/api/admin/departments', request);
   }
 
   updateDepartment(id: number, request: UpdateDepartmentRequest): Observable<Department> {
-    return this.api.put<Department>(`/admin/departments/${id}`, request);
+    return this.api.put<Department>(`/api/admin/departments/${id}`, request);
   }
 
   deleteDepartment(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/departments/${id}`);
+    return this.api.delete<void>(`/api/admin/departments/${id}`);
   }
 
   getTeams(): Observable<Team[]> {
-    return this.api.get<Team[]>('/admin/teams');
+    return this.api.get<Team[]>('/api/admin/teams');
   }
 
   createTeam(request: CreateTeamRequest): Observable<Team> {
-    return this.api.post<Team>('/admin/teams', request);
+    return this.api.post<Team>('/api/admin/teams', request);
   }
 
   updateTeam(id: number, request: UpdateTeamRequest): Observable<Team> {
-    return this.api.put<Team>(`/admin/teams/${id}`, request);
+    return this.api.put<Team>(`/api/admin/teams/${id}`, request);
   }
 
   deleteTeam(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/teams/${id}`);
+    return this.api.delete<void>(`/api/admin/teams/${id}`);
   }
 }

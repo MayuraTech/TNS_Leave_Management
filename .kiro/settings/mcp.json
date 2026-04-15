@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "--header",
+        "X-Goog-Api-Key: AQ.Ab8RN6Lg6eP04YfXuAPc1X5Nkd8Bmus1p5OMG-zUmmp0RIEoNg",
+        "https://stitch.googleapis.com/mcp"
+      ],
+      "disabled": false
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://Saravanan:@dmin@123@10.0.2.134:5432/Interns Training Database"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "query"
+      ]
+    }
+  },
+  "powers": {
+    "mcpServers": {
+      "power-figma-figma": {
+        "type": "http",
+        "url": "https://mcp.figma.com/mcp"
+      }
+    }
+  }
+}
