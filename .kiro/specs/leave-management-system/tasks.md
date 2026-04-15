@@ -269,7 +269,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
   - [x] 17.3 Implement leave balance component
     - Create `LeaveBalanceComponent` displaying a card per leave type with available, accrued, used days and accrual rate
     - _Requirements: 9.1, 9.4_
-  - [ ]* 17.4 Write unit tests for leave request form component
+  - [x] 17.4 Write unit tests for leave request form component
     - Test half-day form requires session type field
     - Test hourly form requires hours input within 0.5–8 range
     - Test form is invalid when end date is before start date
