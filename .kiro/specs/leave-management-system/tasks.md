@@ -123,21 +123,21 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test a range spanning both weekends and holidays
     - _Requirements: 17.2, 17.3_
 
-- [ ] 6. Leave Request submission and validation
-  - [ ] 6.1 Implement leave balance service
+- [x] 6. Leave Request submission and validation
+  - [x] 6.1 Implement leave balance service
     - Create `LeaveBalanceService` with methods: `getAvailableBalance`, `deductBalance`, `restoreBalance`, `adjustBalance` (admin manual adjustment)
     - Support fractional days (BigDecimal) for half-day and hourly deductions
     - _Requirements: 7.1, 7.5, 7.6, 9.1, 9.2, 9.3, 15.5_
-  - [ ] 6.2 Implement leave request submission service
+  - [x] 6.2 Implement leave request submission service
     - Create `LeaveRequestService.submitLeaveRequest` validating: sufficient balance, no overlapping requests, min notice period, duration type constraints (HALF_DAY/HOURLY same-day, HOURLY 0.5–8 hours)
     - Assign request to employee's manager via `ManagerRelationshipService`
     - Set status to PENDING and trigger submission notification
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.7, 7.8, 7.9, 10.5_
-  - [ ] 6.3 Implement leave request cancellation service
+  - [x] 6.3 Implement leave request cancellation service
     - Implement `LeaveRequestService.cancelRequest` allowing cancellation before leave starts (restore balance, notify manager, update calendar)
     - Require manager approval for in-progress leave cancellation
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
-  - [ ] 6.4 Implement leave request REST controller
+  - [x] 6.4 Implement leave request REST controller
     - Create `LeaveRequestController` with: `POST /api/leave/requests`, `GET /api/leave/requests`, `GET /api/leave/requests/{id}`, `DELETE /api/leave/requests/{id}`
     - Create `GET /api/leave/balance` endpoint returning all balances with accrual rates
     - _Requirements: 7.1, 9.1, 9.4, 9.5_
@@ -150,12 +150,12 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test cancellation before start restores balance
     - _Requirements: 7.1, 7.5, 7.6, 7.7, 12.2_
 
-- [ ] 7. Leave Approval workflow
-  - [ ] 7.1 Implement leave approval service
+- [x] 7. Leave Approval workflow
+  - [x] 7.1 Implement leave approval service
     - Create `LeaveApprovalService.approveRequest` deducting balance, updating calendar, notifying employee
     - Create `LeaveApprovalService.denyRequest` requiring a denial reason, notifying employee
     - _Requirements: 8.2, 8.3, 8.4, 8.5_
-  - [ ] 7.2 Implement manager approval REST controller
+  - [x] 7.2 Implement manager approval REST controller
     - Create `PUT /api/leave/requests/{id}/approve` and `PUT /api/leave/requests/{id}/deny` endpoints
     - Create `GET /api/manager/pending-requests` returning all pending requests from manager's direct reports
     - Apply `@PreAuthorize("hasAnyRole('MANAGER','ADMINISTRATOR')")` on manager endpoints
@@ -166,8 +166,8 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Test manager can only approve requests from their own direct reports
     - _Requirements: 8.2, 8.3, 8.1_
 
-- [ ] 8. Leave Calendar service
-  - [ ] 8.1 Implement leave calendar service and controller
+- [x] 8. Leave Calendar service
+  - [x] 8.1 Implement leave calendar service and controller
     - Create `LeaveCalendarService.getCalendarEntries` returning approved leave for a team filtered by date range and leave type
     - Expose `GET /api/leave/calendar` with query params: `startDate`, `endDate`, `teamId`, `leaveTypeId`
     - Include public holidays in calendar response
@@ -202,11 +202,11 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `GET /api/admin/audit` with filters: `userId`, `actionType`, `startDate`, `endDate`, pagination
     - _Requirements: 18.5_
 
-- [ ] 12. Reporting service
-  - [ ] 12.1 Implement report generation service
+- [x] 12. Reporting service
+  - [x] 12.1 Implement report generation service
     - Create `LeaveReportService` with methods for: leave usage by type/date range, leave balances by department, pending requests, leave trends by department/team
     - _Requirements: 13.1, 13.2, 13.3, 13.5_
-  - [ ] 12.2 Implement CSV export service and reporting controller
+  - [x] 12.2 Implement CSV export service and reporting controller
     - Create `ReportExportService` serializing report data to CSV
     - Create `ReportingController` exposing: `GET /api/admin/reports/leave-usage`, `GET /api/admin/reports/leave-balances`, `GET /api/admin/reports/pending-requests`, `GET /api/admin/reports/leave-trends`, `GET /api/admin/reports/export`
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
@@ -214,27 +214,27 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
 - [ ] 13. Checkpoint — Backend complete
   - Ensure all backend unit and integration tests pass. Verify all API endpoints return correct HTTP status codes for happy paths and error cases. Ask the user if questions arise.
 
-- [ ] 14. Angular project structure and core module
-  - [ ] 14.1 Set up Angular project structure
+- [x] 14. Angular project structure and core module
+  - [x] 14.1 Set up Angular project structure
     - Scaffold `core/`, `features/`, `shared/` module structure as defined in the design
     - Configure `app-routing.module.ts` with lazy-loaded feature routes
     - _Requirements: 14.4_
-  - [ ] 14.2 Implement core auth service and JWT interceptor
+  - [x] 14.2 Implement core auth service and JWT interceptor
     - Create `AuthService` handling login, logout, token storage in sessionStorage, and role extraction
     - Create `JwtInterceptor` attaching `Authorization: Bearer <token>` to all outgoing requests
     - Create `ErrorInterceptor` handling 401 redirects and displaying error messages
     - _Requirements: 14.1, 14.6_
-  - [ ] 14.3 Implement route guards
+  - [x] 14.3 Implement route guards
     - Create `AuthGuard` redirecting unauthenticated users to login
     - Create `RoleGuard` restricting routes by role (admin-only, manager-only)
     - _Requirements: 14.4, 14.5_
-  - [ ] 14.4 Implement shared components
+  - [x] 14.4 Implement shared components
     - Create `HeaderComponent`, `SidebarComponent` with role-aware navigation links
     - Create `DataTableComponent` and `DatePickerComponent` as reusable shared components
     - _Requirements: 14.4_
 
-- [ ] 15. Authentication UI
-  - [ ] 15.1 Implement login component
+- [x] 15. Authentication UI
+  - [x] 15.1 Implement login component
     - Create `LoginComponent` with reactive form accepting username/email and password
     - Display validation errors and account-locked messages
     - On success, store token and redirect to dashboard
