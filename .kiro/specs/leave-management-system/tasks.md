@@ -4,6 +4,24 @@
 
 Incremental implementation of the Leave Management System using Spring Boot (Java 21) for the backend and Angular (TypeScript) for the frontend. Tasks are ordered to build foundational layers first (database, auth, core entities), then feature modules, and finally wire everything together.
 
+The system implements a three-tier architecture with role-based access control (Employee, Manager, Administrator), supporting leave request workflows, automated balance tracking, team calendar visualization, and comprehensive reporting with audit trails.
+
+### Current Implementation Status
+
+**Completed:**
+- Backend infrastructure (tasks 1-12, 21): Database schema, authentication, user management, leave management, policies, accrual, notifications, audit, and reporting services are implemented
+- Frontend infrastructure (tasks 14-20): Angular project structure, authentication UI, user management UI, leave request UI, approval UI, policy UI, and reporting UI are implemented
+
+**Remaining:**
+- Task 13: Backend verification checkpoint - needs comprehensive testing and validation
+- Task 22: Integration and wiring - critical task to connect frontend to backend and verify all integrations
+- Task 23: Final comprehensive system verification - end-to-end testing of all user workflows
+
+**Next Steps:**
+1. Complete backend verification (task 13) to ensure all backend APIs are working correctly
+2. Complete integration tasks (task 22) to wire frontend services to backend endpoints
+3. Perform comprehensive system testing (task 23) across all three user roles
+
 ## Tasks
 - [x] 1. Database schema and Flyway migrations
   - [x] 1.1 Create initial Flyway migration for core tables
@@ -117,7 +135,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `LeavePolicyController` with admin endpoints: `POST /api/admin/leave-types`, `PUT /api/admin/leave-types/{id}`, `GET /api/leave-types`
     - Create `PublicHolidayController` with `POST /api/admin/public-holidays`, `POST /api/admin/public-holidays/import`, `GET /api/public-holidays`
     - _Requirements: 10.1, 17.1, 17.5_
-  - [x] 5.5 Write unit tests for working-day calculator
+  - [ ]* 5.5 Write unit tests for working-day calculator
     - Test that weekends are excluded from duration
     - Test that public holidays are excluded from duration
     - Test a range spanning both weekends and holidays
@@ -211,8 +229,56 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `ReportingController` exposing: `GET /api/admin/reports/leave-usage`, `GET /api/admin/reports/leave-balances`, `GET /api/admin/reports/pending-requests`, `GET /api/admin/reports/leave-trends`, `GET /api/admin/reports/export`
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 13. Checkpoint — Backend complete
-  - Ensure all backend unit and integration tests pass. Verify all API endpoints return correct HTTP status codes for happy paths and error cases. Ask the user if questions arise.
+- [ ] 13. Checkpoint — Backend implementation verification
+  - [ ] 13.1 Verify database schema and migrations
+    - Ensure all Flyway migrations execute successfully
+    - Verify all tables created with correct columns and constraints
+    - Verify foreign key relationships are properly established
+    - Check that seed data (roles) is inserted correctly
+  - [ ] 13.2 Create test data for development and testing
+    - Create SQL script or service method to populate test data:
+      - 3 departments (Engineering, Sales, HR)
+      - 3 teams (one per department)
+      - 10 test users with different roles (2 admins, 3 managers, 5 employees)
+      - Manager-employee relationships
+      - 3 leave types (Annual Leave, Sick Leave, Personal Leave) with policies
+      - 5-10 public holidays for current year
+      - Initial leave balances for all employees
+    - Document test user credentials for manual testing
+    - _Requirements: All requirements for testing purposes_
+  - [ ] 13.3 Verify backend compilation and startup
+    - Ensure backend compiles without errors: `mvn clean compile`
+    - Ensure application starts successfully with all beans initialized
+    - Verify database connection is established
+    - Check application logs for any errors or warnings
+  - [ ] 13.4 Test API endpoints with Postman or curl
+    - Test authentication endpoints (login, logout, refresh)
+    - Test user management endpoints (create, update, deactivate user)
+    - Test leave request endpoints (submit, list, cancel)
+    - Test leave approval endpoints (approve, deny, pending requests)
+    - Test leave balance endpoint
+    - Test leave calendar endpoint
+    - Test reporting endpoints
+    - Test audit trail endpoint
+    - Verify all endpoints return correct HTTP status codes (200, 201, 400, 401, 403, 404)
+    - Verify error responses include proper error codes and messages
+  - [ ] 13.5 Verify security configuration
+    - Test that unauthenticated requests to protected endpoints return 401
+    - Test that Employee role cannot access admin endpoints (returns 403)
+    - Test that Manager role cannot access admin endpoints (returns 403)
+    - Test that Administrator role can access all endpoints
+    - Verify JWT tokens are properly validated
+    - Verify CORS configuration allows frontend origin
+  - [ ] 13.6 Verify business logic
+    - Test leave balance deduction on approval
+    - Test balance restoration on cancellation
+    - Test overlapping request detection
+    - Test insufficient balance rejection
+    - Test working day calculation (excluding weekends and holidays)
+    - Test account lockout after 3 failed login attempts
+  - [ ] 13.7 User consultation
+    - Review backend implementation status with user
+    - Ask the user if questions arise or if any backend changes are needed before proceeding to frontend
 
 - [x] 14. Angular project structure and core module
   - [x] 14.1 Set up Angular project structure
@@ -223,6 +289,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Create `AuthService` handling login, logout, token storage in sessionStorage, and role extraction
     - Create `JwtInterceptor` attaching `Authorization: Bearer <token>` to all outgoing requests
     - Create `ErrorInterceptor` handling 401 redirects and displaying error messages
+    - Implement session timeout tracking (30 minutes of inactivity)
     - _Requirements: 14.1, 14.6_
   - [x] 14.3 Implement route guards
     - Create `AuthGuard` redirecting unauthenticated users to login
@@ -309,22 +376,146 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
   - Implement `ReminderScheduler` using `@Scheduled` to run daily, querying leave requests starting within 2 days and triggering reminder notifications to employees
   - _Requirements: 16.3_
 
-- [ ] 22. Integration and wiring
+- [x] 22. Integration and wiring
   - [ ] 22.1 Wire Angular services to backend API endpoints
-    - Create Angular services (`UserService`, `LeaveService`, `LeaveBalanceService`, `ReportService`, `AuditService`, `PolicyService`) calling the correct REST endpoints
+    - Verify Angular services (`UserService`, `LeaveService`, `LeaveBalanceService`, `ReportService`, `AuditService`, `PolicyService`) are calling the correct REST endpoints
     - Ensure all services use `JwtInterceptor` and handle errors via `ErrorInterceptor`
-    - _Requirements: All_
+    - Verify all HTTP methods (GET, POST, PUT, DELETE) are correctly mapped to backend endpoints
+    - Test each service method with actual backend API calls
+    - Verify request/response DTOs match between frontend and backend
+    - _Requirements: 1.1, 7.1, 8.1, 9.1, 13.1, 14.1_
   - [ ] 22.2 Wire role-based navigation and route guards
-    - Apply `AuthGuard` to all protected routes
-    - Apply `RoleGuard` to admin-only and manager-only routes
-    - Hide navigation items in sidebar based on user roles
-    - _Requirements: 14.4, 14.5_
+    - Apply `AuthGuard` to all protected routes in `app.routes.ts`
+    - Apply `RoleGuard` to admin-only routes (`/admin/**`, `/user-management/**`, `/reports/**`, `/leave-policy/**`)
+    - Apply `RoleGuard` to manager-only routes (`/leave-approval/**`)
+    - Hide navigation items in sidebar/header based on user roles (User Management for ADMINISTRATOR only, Pending Approvals for MANAGER/ADMINISTRATOR)
+    - Test navigation restrictions by logging in as different roles (Employee, Manager, Administrator)
+    - _Requirements: 14.4, 14.5, 1.1_
   - [ ] 22.3 Wire audit logging into all mutating operations
-    - Ensure `AuditEventListener` captures all required events: user CRUD, leave request lifecycle, balance adjustments
+    - Verify `AuditEventListener` captures all required events: user CRUD, leave request lifecycle, balance adjustments
+    - Verify audit logs include timestamp, performer, entity type, action, old/new values
+    - Test audit trail by performing operations and checking audit log entries in database
+    - Verify audit search functionality in admin UI works correctly
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
+  - [ ] 22.4 Configure environment-specific settings
+    - Set up Angular environment files (`environment.ts`, `environment.prod.ts`) with API base URLs
+    - Configure backend `application.yml` with environment variable placeholders for DB, JWT, SMTP
+    - Verify CORS configuration in `SecurityConfig` allows Angular frontend origin (http://localhost:4200 for dev)
+    - Document required environment variables in README or .env.example file
+    - Test application startup with environment variables properly configured
+    - _Requirements: 14.1, 16.5_
+  - [ ] 22.5 Verify notification email delivery
+    - Test email notifications for all required events: leave submitted, approved/denied, cancelled, upcoming reminder, account created, password reset
+    - Verify email templates contain correct information and formatting
+    - Test with actual SMTP server or email testing service (e.g., Mailtrap, MailHog)
+    - Verify notification event listeners are properly wired to trigger emails
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 1.3, 2.3, 6.5_
+  - [ ] 22.6 Verify leave balance calculations
+    - Test full-day leave deducts correct number of days (excluding weekends and public holidays)
+    - Test half-day leave deducts exactly 0.5 days
+    - Test hourly permission deducts correct hours from hourly balance
+    - Test leave cancellation restores balance correctly
+    - Test accrual processing adds correct amounts and respects carry-over limits
+    - _Requirements: 7.5, 7.6, 9.2, 12.2, 15.2, 15.3, 17.2, 17.3_
 
-- [ ] 23. Final checkpoint — Ensure all tests pass
-  - Run all backend unit and integration tests. Run all Angular component tests. Verify end-to-end flows for the three roles (Employee, Manager, Administrator). Ask the user if questions arise.
+- [ ] 23. Final checkpoint — Comprehensive system verification
+  - [ ] 23.1 Run all backend tests
+    - Execute all backend unit tests with Maven: `mvn test`
+    - Execute integration tests if available
+    - Verify test coverage meets minimum 80% for service layer
+    - Fix any failing tests before proceeding
+  - [ ] 23.2 Run all frontend tests
+    - Execute all Angular component tests: `ng test --watch=false`
+    - Verify test coverage meets minimum 70%
+    - Fix any failing tests before proceeding
+  - [ ] 23.3 Test authentication and authorization flows
+    - Test successful login with username and with email
+    - Test failed login increments failed attempts counter
+    - Test account lockout after 3 failed attempts (15-minute lockout)
+    - Test locked account cannot login even with correct credentials
+    - Test session timeout after 30 minutes of inactivity
+    - Test JWT token refresh functionality
+    - Test unauthorized access returns 401 and redirects to login
+    - Test forbidden access returns 403 for role-restricted endpoints
+  - [ ] 23.4 Test Employee role workflows
+    - Login as Employee
+    - View leave balance for all leave types
+    - Submit full-day leave request (verify balance check, overlap check, min notice check)
+    - Submit half-day leave request with morning session
+    - Submit half-day leave request with afternoon session
+    - Submit hourly permission (0.5-8 hours range)
+    - View submitted leave requests with status
+    - Cancel a pending leave request (verify balance restoration)
+    - Verify Employee cannot access User Management, Reports, or Leave Policy modules
+  - [ ] 23.5 Test Manager role workflows
+    - Login as Manager
+    - View pending leave requests from direct reports only
+    - Approve a leave request (verify balance deduction, notification sent, calendar updated)
+    - Deny a leave request with reason (verify notification sent)
+    - View team calendar showing approved leave for team members
+    - Filter team calendar by leave type and date range
+    - Verify dates with multiple team members on leave are highlighted
+    - Verify Manager can also submit their own leave requests
+    - Verify Manager cannot access User Management, Reports, or Leave Policy modules
+  - [ ] 23.6 Test Administrator role workflows
+    - Login as Administrator
+    - Create new user account (verify temporary password email sent)
+    - Assign multiple roles to a user
+    - Update user profile information
+    - Reset user password (verify email sent)
+    - Deactivate user account (verify pending leave requests cancelled)
+    - Reactivate user account (verify notification email sent)
+    - Create department and team
+    - Assign manager-employee relationships
+    - Create leave type with accrual rate, carry-over limit, min notice days
+    - Add public holidays manually and via CSV import
+    - Manually adjust leave balance with reason
+    - Trigger manual accrual processing
+    - Generate leave usage report with filters
+    - Generate leave balance report by department
+    - Generate pending requests report
+    - Generate leave trends report
+    - Export report to CSV
+    - Search audit trail by user, date range, action type
+    - Verify Administrator can also submit and approve leave requests
+  - [ ] 23.7 Test leave balance calculations
+    - Submit full-day leave spanning weekends (verify weekends excluded from deduction)
+    - Submit full-day leave spanning public holidays (verify holidays excluded)
+    - Submit half-day leave (verify exactly 0.5 days deducted)
+    - Submit hourly permission (verify hours deducted from hourly balance)
+    - Cancel approved leave (verify balance restored)
+    - Verify accrual processing adds correct amounts monthly
+    - Verify balance capped at max carry-over limit
+  - [ ] 23.8 Test notification system
+    - Verify leave submitted notification sent to manager
+    - Verify leave approved notification sent to employee
+    - Verify leave denied notification sent to employee with reason
+    - Verify leave cancelled notification sent to manager
+    - Verify upcoming leave reminder sent 2 days before leave starts
+    - Verify account created notification sent with temporary password
+    - Verify password reset notification sent with temporary password
+  - [ ] 23.9 Test audit trail
+    - Perform user CRUD operations and verify audit logs created
+    - Submit, approve, deny, cancel leave requests and verify audit logs
+    - Adjust leave balance and verify audit log with reason
+    - Verify audit logs include: timestamp, performer, entity type, action, old/new values
+    - Search audit trail and verify filtering works correctly
+  - [ ] 23.10 Test edge cases and error handling
+    - Submit leave request with insufficient balance (verify error message)
+    - Submit overlapping leave request (verify error message)
+    - Submit leave request violating min notice period (verify error message)
+    - Submit half-day leave without session type (verify validation error)
+    - Submit hourly permission outside 0.5-8 hour range (verify validation error)
+    - Submit hourly permission spanning multiple days (verify validation error)
+    - Try to access admin endpoints as Employee (verify 403 Forbidden)
+    - Try to approve leave request for non-direct report as Manager (verify error)
+    - Create user with duplicate username (verify error message)
+    - Create user with duplicate email (verify error message)
+  - [ ] 23.11 Final verification and user consultation
+    - Review all test results and fix any issues found
+    - Verify all critical user workflows function correctly
+    - Document any known issues or limitations
+    - Ask the user if questions arise or if additional testing is needed
 
 ## Notes
 
@@ -332,3 +523,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
 - Each task references specific requirements for traceability
 - No property-based tests are included — the design document explicitly states PBT is not applicable for this CRUD/workflow application; unit and integration tests are used throughout
 - Checkpoints at tasks 13 and 23 ensure incremental validation before proceeding
+- The system uses Java 21 with Spring Boot 3 for backend and Angular with TypeScript for frontend
+- Authentication uses JWT tokens with 30-minute expiration and automatic session timeout
+- All passwords are hashed using BCrypt with strength factor 12
+- The User Management module is accessible ONLY to administrators

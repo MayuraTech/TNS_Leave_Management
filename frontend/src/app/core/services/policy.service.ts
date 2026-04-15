@@ -31,34 +31,34 @@ export class PolicyService {
   constructor(private api: ApiService, private http: HttpClient) {}
 
   getLeaveTypes(): Observable<LeaveType[]> {
-    return this.api.get<LeaveType[]>('/api/leave-types');
+    return this.api.get<LeaveType[]>('/leave-types');
   }
 
   createLeaveType(payload: LeaveTypePayload): Observable<LeaveType> {
-    return this.api.post<LeaveType>('/api/admin/leave-types', payload);
+    return this.api.post<LeaveType>('/admin/leave-types', payload);
   }
 
   updateLeaveType(typeId: number, payload: LeaveTypePayload): Observable<LeaveType> {
-    return this.api.put<LeaveType>(`/api/admin/leave-types/${typeId}`, payload);
+    return this.api.put<LeaveType>(`/admin/leave-types/${typeId}`, payload);
   }
 
   getPublicHolidays(year: number): Observable<PublicHoliday[]> {
-    return this.api.get<PublicHoliday[]>('/api/public-holidays', { year });
+    return this.api.get<PublicHoliday[]>('/public-holidays', { year });
   }
 
   createPublicHoliday(payload: PublicHolidayPayload): Observable<PublicHoliday> {
-    return this.api.post<PublicHoliday>('/api/admin/public-holidays', payload);
+    return this.api.post<PublicHoliday>('/admin/public-holidays', payload);
   }
 
   deletePublicHoliday(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/admin/public-holidays/${id}`);
+    return this.api.delete<void>(`/admin/public-holidays/${id}`);
   }
 
   importPublicHolidays(file: File): Observable<{ importedCount: number }> {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<{ importedCount: number }>(
-      `${this.baseUrl}/api/admin/public-holidays/import`,
+      `${this.baseUrl}/admin/public-holidays/import`,
       formData
     );
   }

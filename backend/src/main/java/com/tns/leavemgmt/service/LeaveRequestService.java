@@ -8,6 +8,7 @@ import com.tns.leavemgmt.exception.CancellationNotAllowedException;
 import com.tns.leavemgmt.exception.InsufficientLeaveBalanceException;
 import com.tns.leavemgmt.exception.OverlappingLeaveRequestException;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
+import com.tns.leavemgmt.leave.service.WorkingDayCalculator;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
 import com.tns.leavemgmt.repository.LeaveTypeRepository;
 import org.slf4j.Logger;
@@ -42,17 +43,20 @@ public class LeaveRequestService {
     private final LeaveBalanceService leaveBalanceService;
     private final ManagerRelationshipService managerRelationshipService;
     private final ApplicationEventPublisher eventPublisher;
+    private final WorkingDayCalculator workingDayCalculator;
 
     public LeaveRequestService(LeaveTypeRepository leaveTypeRepository,
                                LeaveRequestRepository leaveRequestRepository,
                                LeaveBalanceService leaveBalanceService,
                                ManagerRelationshipService managerRelationshipService,
-                               ApplicationEventPublisher eventPublisher) {
+                               ApplicationEventPublisher eventPublisher,
+                               WorkingDayCalculator workingDayCalculator) {
         this.leaveTypeRepository = leaveTypeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.leaveBalanceService = leaveBalanceService;
         this.managerRelationshipService = managerRelationshipService;
         this.eventPublisher = eventPublisher;
+        this.workingDayCalculator = workingDayCalculator;
     }
 
     /**
@@ -264,8 +268,7 @@ public class LeaveRequestService {
 
     /**
      * Calculates the total days for the leave request.
-     * - FULL_DAY: calendar days between startDate and endDate (inclusive).
-     *   TODO: Integrate WorkingDayCalculator to exclude weekends/holidays.
+     * - FULL_DAY: working days between startDate and endDate (excluding weekends and public holidays).
      * - HALF_DAY: 0.5 days
      * - HOURLY: durationInHours / 8
      */
@@ -274,9 +277,9 @@ public class LeaveRequestService {
             case HALF_DAY -> HALF_DAY;
             case HOURLY -> dto.getDurationInHours().divide(HOURS_PER_DAY, 4, RoundingMode.HALF_UP);
             case FULL_DAY -> {
-                // TODO: Replace with WorkingDayCalculator to exclude weekends and public holidays
-                long calendarDays = dto.getStartDate().until(dto.getEndDate()).getDays() + 1;
-                yield BigDecimal.valueOf(calendarDays);
+                long workingDays = workingDayCalculator.calculateWorkingDays(
+                    dto.getStartDate(), dto.getEndDate());
+                yield BigDecimal.valueOf(workingDays);
             }
         };
     }

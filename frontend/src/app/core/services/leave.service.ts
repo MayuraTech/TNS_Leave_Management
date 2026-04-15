@@ -10,42 +10,42 @@ export class LeaveService {
   constructor(private api: ApiService) {}
 
   getLeaveTypes(): Observable<LeaveType[]> {
-    return this.api.get<LeaveType[]>('/api/leave-types');
+    return this.api.get<LeaveType[]>('/leave-types');
   }
 
   getLeaveBalances(): Observable<LeaveBalance[]> {
-    return this.api.get<LeaveBalance[]>('/api/leave/balance');
+    return this.api.get<LeaveBalance[]>('/leave/balance');
   }
 
   submitLeaveRequest(dto: LeaveRequestDTO): Observable<LeaveRequest> {
-    return this.api.post<LeaveRequest>('/api/leave/requests', dto);
+    return this.api.post<LeaveRequest>('/leave/requests', dto);
   }
 
   getLeaveRequests(filters?: { status?: LeaveRequestStatus }): Observable<LeaveRequest[]> {
     const params: Record<string, string> = {};
     if (filters?.status) params['status'] = filters.status;
-    return this.api.get<LeaveRequest[]>('/api/leave/requests', params);
+    return this.api.get<LeaveRequest[]>('/leave/requests', params);
   }
 
   getLeaveRequest(id: number): Observable<LeaveRequest> {
-    return this.api.get<LeaveRequest>(`/api/leave/requests/${id}`);
+    return this.api.get<LeaveRequest>(`/leave/requests/${id}`);
   }
 
   cancelLeaveRequest(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/leave/requests/${id}`);
+    return this.api.delete<void>(`/leave/requests/${id}`);
   }
 
   // Manager endpoints
   getPendingRequests(): Observable<LeaveRequest[]> {
-    return this.api.get<LeaveRequest[]>('/api/manager/pending-requests');
+    return this.api.get<LeaveRequest[]>('/manager/pending-requests');
   }
 
   approveLeaveRequest(id: number, comments: string): Observable<LeaveRequest> {
-    return this.api.put<LeaveRequest>(`/api/leave/requests/${id}/approve`, { comments });
+    return this.api.put<LeaveRequest>(`/leave/requests/${id}/approve`, { comments });
   }
 
   denyLeaveRequest(id: number, reason: string): Observable<LeaveRequest> {
-    return this.api.put<LeaveRequest>(`/api/leave/requests/${id}/deny`, { reason });
+    return this.api.put<LeaveRequest>(`/leave/requests/${id}/deny`, { reason });
   }
 
   // Calendar endpoints
@@ -61,10 +61,10 @@ export class LeaveService {
     };
     if (params.teamId != null) p['teamId'] = String(params.teamId);
     if (params.leaveTypeId != null) p['leaveTypeId'] = String(params.leaveTypeId);
-    return this.api.get<CalendarEntry[]>('/api/leave/calendar', p);
+    return this.api.get<CalendarEntry[]>('/leave/calendar', p);
   }
 
   getPublicHolidays(year: number): Observable<PublicHoliday[]> {
-    return this.api.get<PublicHoliday[]>('/api/public-holidays', { year });
+    return this.api.get<PublicHoliday[]>('/public-holidays', { year });
   }
 }
