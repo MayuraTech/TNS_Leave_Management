@@ -1,44 +1,47 @@
 package com.tns.leavemgmt.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "audit_logs")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "audit_logs")
 public class AuditLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "entity_type", nullable = false, length = 100)
+    @Column(nullable = false)
     private String entityType;
 
-    @Column(name = "entity_id", nullable = false)
+    @Column(nullable = false)
     private Long entityId;
 
-    @Column(name = "action_type", nullable = false, length = 50)
+    @Column(nullable = false)
     private String actionType;
 
-    @Column(name = "old_value", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String oldValue;
 
-    @Column(name = "new_value", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String newValue;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performed_by")
     private User performedBy;
 
-    @Column(name = "performed_at", nullable = false)
-    private LocalDateTime performedAt;
+    @Column(nullable = false)
+    @Builder.Default
+    private LocalDateTime performedAt = LocalDateTime.now();
 
-    @Column(name = "ip_address", length = 45)
     private String ipAddress;
 }

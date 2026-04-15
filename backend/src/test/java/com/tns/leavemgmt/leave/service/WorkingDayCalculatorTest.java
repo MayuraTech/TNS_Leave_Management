@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.leave.service;
 
-import com.tns.leavemgmt.leave.entity.PublicHoliday;
+import com.tns.leavemgmt.entity.PublicHoliday;
 import com.tns.leavemgmt.leave.repository.PublicHolidayRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.user.repository;
 
-import com.tns.leavemgmt.user.entity.Role;
+import com.tns.leavemgmt.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

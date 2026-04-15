@@ -3,7 +3,7 @@ package com.tns.leavemgmt.user.controller;
 import com.tns.leavemgmt.user.dto.CreateTeamRequest;
 import com.tns.leavemgmt.user.dto.TeamResponse;
 import com.tns.leavemgmt.user.dto.UpdateTeamRequest;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import com.tns.leavemgmt.user.service.TeamService;
 import jakarta.validation.Valid;

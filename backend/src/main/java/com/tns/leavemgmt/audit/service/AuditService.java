@@ -1,8 +1,8 @@
 package com.tns.leavemgmt.audit.service;
 
-import com.tns.leavemgmt.audit.entity.AuditLog;
+import com.tns.leavemgmt.entity.AuditLog;
 import com.tns.leavemgmt.audit.repository.AuditLogRepository;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

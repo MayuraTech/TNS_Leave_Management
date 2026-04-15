@@ -1,7 +1,7 @@
 package com.tns.leavemgmt.user.controller;
 
 import com.tns.leavemgmt.user.dto.*;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import com.tns.leavemgmt.user.service.ManagerRelationshipService;
 import com.tns.leavemgmt.user.service.RoleService;

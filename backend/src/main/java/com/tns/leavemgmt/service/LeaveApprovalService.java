@@ -1,8 +1,8 @@
 package com.tns.leavemgmt.service;
 
-import com.tns.leavemgmt.entity.LeaveDurationType;
+import com.tns.leavemgmt.entity.enums.LeaveDurationType;
 import com.tns.leavemgmt.entity.LeaveRequest;
-import com.tns.leavemgmt.entity.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.event.LeaveRequestApprovedEvent;
 import com.tns.leavemgmt.event.LeaveRequestDeniedEvent;

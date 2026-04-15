@@ -5,7 +5,7 @@ import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.leave.dto.CreateLeaveTypeRequest;
 import com.tns.leavemgmt.leave.dto.LeaveTypeResponse;
 import com.tns.leavemgmt.leave.dto.UpdateLeaveTypeRequest;
-import com.tns.leavemgmt.leave.entity.LeaveType;
+import com.tns.leavemgmt.entity.LeaveType;
 import com.tns.leavemgmt.leave.repository.LeaveTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

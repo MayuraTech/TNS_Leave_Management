@@ -6,7 +6,7 @@ import com.tns.leavemgmt.dto.LeaveUsageReportItem;
 import com.tns.leavemgmt.dto.PendingRequestReportItem;
 import com.tns.leavemgmt.entity.LeaveBalance;
 import com.tns.leavemgmt.entity.LeaveRequest;
-import com.tns.leavemgmt.entity.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.repository.LeaveBalanceRepository;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;

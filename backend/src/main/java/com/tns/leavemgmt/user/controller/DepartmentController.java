@@ -3,7 +3,7 @@ package com.tns.leavemgmt.user.controller;
 import com.tns.leavemgmt.user.dto.CreateDepartmentRequest;
 import com.tns.leavemgmt.user.dto.DepartmentResponse;
 import com.tns.leavemgmt.user.dto.UpdateDepartmentRequest;
-import com.tns.leavemgmt.user.entity.User;
+import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import com.tns.leavemgmt.user.service.DepartmentService;
 import jakarta.validation.Valid;

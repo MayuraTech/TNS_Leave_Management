@@ -1,17 +1,20 @@
 package com.tns.leavemgmt.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-@Entity
-@Table(name = "leave_policies")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "leave_policies")
 public class LeavePolicy {
 
     @Id
@@ -22,18 +25,17 @@ public class LeavePolicy {
     @JoinColumn(name = "leave_type_id")
     private LeaveType leaveType;
 
-    @Column(name = "accrual_rate", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal accrualRate;
 
-    @Column(name = "max_carry_over_days", nullable = false)
-    private int maxCarryOverDays;
+    @Column(nullable = false)
+    private Integer maxCarryOverDays;
 
-    @Column(name = "min_notice_days", nullable = false)
-    private int minNoticeDays;
+    @Column(nullable = false)
+    private Integer minNoticeDays;
 
-    @Column(name = "effective_from", nullable = false)
-    private LocalDateTime effectiveFrom;
+    @Column(nullable = false)
+    private LocalDate effectiveFrom;
 
-    @Column(name = "effective_to")
-    private LocalDateTime effectiveTo;
+    private LocalDate effectiveTo;
 }

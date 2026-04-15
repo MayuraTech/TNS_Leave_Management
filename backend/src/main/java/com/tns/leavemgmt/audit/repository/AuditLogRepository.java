@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.audit.repository;
 
-import com.tns.leavemgmt.audit.entity.AuditLog;
+import com.tns.leavemgmt.entity.AuditLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

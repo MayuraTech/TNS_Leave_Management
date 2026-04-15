@@ -1,16 +1,20 @@
 package com.tns.leavemgmt.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "leave_types")
-@Getter
-@Setter
 public class LeaveType {
 
     @Id
@@ -23,7 +27,8 @@ public class LeaveType {
     private String description;
 
     @Column(nullable = false)
-    private Boolean isActive = true;
+    @Builder.Default
+    private boolean isActive = true;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

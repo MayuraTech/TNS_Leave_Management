@@ -1,9 +1,8 @@
 package com.tns.leavemgmt.repository;
 
 import com.tns.leavemgmt.entity.LeaveRequest;
-import com.tns.leavemgmt.entity.LeaveRequestStatus;
-import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
+import com.tns.leavemgmt.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
