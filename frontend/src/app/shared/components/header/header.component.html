@@ -1,0 +1,21 @@
+<header class="app-header">
+  <div class="header-brand">
+    <a routerLink="/leave" class="brand-link">TNS Leave Management</a>
+  </div>
+
+  <nav class="header-nav" *ngIf="currentUser">
+    <a routerLink="/leave" routerLinkActive="active" class="nav-link">My Leave</a>
+    <a *ngIf="isManager || isAdmin" routerLink="/approval" routerLinkActive="active" class="nav-link">Approvals</a>
+    <a *ngIf="isAdmin" routerLink="/admin/users" routerLinkActive="active" class="nav-link">Users</a>
+    <a *ngIf="isAdmin" routerLink="/admin/policy" routerLinkActive="active" class="nav-link">Policy</a>
+    <a *ngIf="isAdmin" routerLink="/admin/reports" routerLinkActive="active" class="nav-link">Reports</a>
+  </nav>
+
+  <div class="header-user" *ngIf="currentUser">
+    <span class="user-info">
+      <span class="user-name">{{ displayName }}</span>
+      <span class="user-role">{{ roleLabel }}</span>
+    </span>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </div>
+</header>
