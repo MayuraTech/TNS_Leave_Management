@@ -1,37 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import { AuthUser, UserRole } from '../../../core/models/user.model';
+import { AuthUser } from '../../../core/models/user.model';
+import { SidebarService } from '../../../core/services/sidebar.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  isOpen = true;
   currentUser: AuthUser | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private sidebarService: SidebarService
+  ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
+
+    this.sidebarService.isOpen$.subscribe(isOpen => {
+      this.isOpen = isOpen;
+    });
   }
 
-  get isEmployee(): boolean {
-    return this.authService.hasRole('EMPLOYEE');
-  }
-
-  get isManager(): boolean {
-    return this.authService.hasRole('MANAGER');
-  }
-
-  get isAdmin(): boolean {
-    return this.authService.hasRole('ADMINISTRATOR');
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
   }
 
   get displayName(): string {

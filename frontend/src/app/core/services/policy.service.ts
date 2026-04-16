@@ -16,8 +16,9 @@ export interface LeaveTypePayload {
 
 export interface PublicHoliday {
   id: number;
-  holidayDate: string;
+  date: string;
   name: string;
+  createdAt?: string;
 }
 
 export interface PublicHolidayPayload {

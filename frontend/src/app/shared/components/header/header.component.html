@@ -1,21 +1,28 @@
-<header class="app-header">
+<header class="app-header" *ngIf="currentUser">
+  <!-- Left: Burger Menu Button -->
+  <button class="burger-btn" (click)="toggleSidebar()" [class.open]="isOpen">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Center: Brand/Title -->
   <div class="header-brand">
-    <a routerLink="/leave" class="brand-link">TNS Leave Management</a>
+    <h1>TNS Leave Management</h1>
   </div>
 
-  <nav class="header-nav" *ngIf="currentUser">
-    <a routerLink="/leave" routerLinkActive="active" class="nav-link">My Leave</a>
-    <a *ngIf="isManager || isAdmin" routerLink="/approval" routerLinkActive="active" class="nav-link">Approvals</a>
-    <a *ngIf="isAdmin" routerLink="/admin/users" routerLinkActive="active" class="nav-link">Users</a>
-    <a *ngIf="isAdmin" routerLink="/admin/policy" routerLinkActive="active" class="nav-link">Policy</a>
-    <a *ngIf="isAdmin" routerLink="/admin/reports" routerLinkActive="active" class="nav-link">Reports</a>
-  </nav>
-
-  <div class="header-user" *ngIf="currentUser">
-    <span class="user-info">
-      <span class="user-name">{{ displayName }}</span>
-      <span class="user-role">{{ roleLabel }}</span>
-    </span>
-    <button class="btn-logout" (click)="logout()">Logout</button>
+  <!-- Right: User Info & Logout -->
+  <div class="header-actions">
+    <div class="user-info">
+      <div class="user-avatar">{{ displayName.charAt(0).toUpperCase() }}</div>
+      <div class="user-details">
+        <div class="user-name">{{ displayName }}</div>
+        <div class="user-role">{{ roleLabel }}</div>
+      </div>
+    </div>
+    <button class="btn-logout" (click)="logout()" title="Logout">
+      <span class="logout-icon">🚪</span>
+      <span class="logout-text">Logout</span>
+    </button>
   </div>
 </header>

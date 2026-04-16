@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { AuthUser } from '../../../core/models/user.model';
+import { SidebarService } from '../../../core/services/sidebar.service';
 
 interface NavItem {
   label: string;
@@ -18,7 +20,11 @@ interface NavItem {
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
+  isOpen = true; // Start open on desktop
+  currentUser: AuthUser | null = null;
+
   navItems: NavItem[] = [
+    { label: 'Dashboard', route: '/dashboard', icon: '🏠' },
     { label: 'My Leave', route: '/leave', icon: '📋' },
     { label: 'Apply Leave', route: '/leave/new', icon: '➕' },
     { label: 'Approvals', route: '/approval', icon: '✅', roles: ['MANAGER', 'ADMINISTRATOR'] },
@@ -26,19 +32,50 @@ export class SidebarComponent implements OnInit {
     { label: 'Departments', route: '/admin/users/departments', icon: '🏢', roles: ['ADMINISTRATOR'] },
     { label: 'Teams', route: '/admin/users/teams', icon: '👨‍👩‍👧‍👦', roles: ['ADMINISTRATOR'] },
     { label: 'Leave Policy', route: '/admin/policy', icon: '📜', roles: ['ADMINISTRATOR'] },
+    { label: 'Holidays', route: '/admin/policy/holidays', icon: '🗓️', roles: ['ADMINISTRATOR'] },
     { label: 'Reports', route: '/admin/reports', icon: '📊', roles: ['ADMINISTRATOR'] },
     { label: 'Audit Trail', route: '/admin/reports/audit', icon: '🔍', roles: ['ADMINISTRATOR'] }
   ];
 
   visibleItems: NavItem[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private sidebarService: SidebarService
+  ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(() => {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
       this.visibleItems = this.navItems.filter(item =>
         !item.roles || this.authService.hasAnyRole(item.roles)
       );
     });
+
+    // Subscribe to sidebar state
+    this.sidebarService.isOpen$.subscribe(isOpen => {
+      this.isOpen = isOpen;
+    });
+  }
+
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
+  }
+
+  closeSidebar(): void {
+    if (window.innerWidth < 768) {
+      this.sidebarService.setOpen(false);
+    }
+  }
+
+  get displayName(): string {
+    return this.currentUser?.username ?? '';
+  }
+
+  get roleLabel(): string {
+    const roles = this.currentUser?.roles ?? [];
+    if (roles.includes('ADMINISTRATOR')) return 'Administrator';
+    if (roles.includes('MANAGER')) return 'Manager';
+    return 'Employee';
   }
 }

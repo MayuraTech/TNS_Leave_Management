@@ -52,6 +52,7 @@ import { User } from '../../../core/models/user.model';
               <th>Email</th>
               <th>Roles</th>
               <th>Department</th>
+              <th>Manager</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -67,6 +68,7 @@ import { User } from '../../../core/models/user.model';
                 </span>
               </td>
               <td>{{ getDepartmentName(user.departmentId) }}</td>
+              <td>{{ user.managerName || '—' }}</td>
               <td>
                 <span class="status-badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
                   {{ user.isActive ? 'Active' : 'Inactive' }}
@@ -77,7 +79,7 @@ import { User } from '../../../core/models/user.model';
               </td>
             </tr>
             <tr *ngIf="users.length === 0">
-              <td colspan="7" class="empty-state">No users found.</td>
+              <td colspan="8" class="empty-state">No users found.</td>
             </tr>
           </tbody>
         </table>

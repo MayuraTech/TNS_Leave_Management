@@ -16,6 +16,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./shared/layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
+      // Dashboard (all authenticated users)
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then(
+            m => m.DASHBOARD_ROUTES
+          )
+      },
+
       // Leave requests (all authenticated users)
       {
         path: 'leave',
@@ -60,7 +69,7 @@ export const routes: Routes = [
       },
 
       // Default redirect
-      { path: '', redirectTo: 'leave', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 

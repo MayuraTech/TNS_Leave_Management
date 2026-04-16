@@ -1,1 +1,231 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Bootstrap Customization - Override Bootstrap variables before import */
+/* Note: Bootstrap CSS is imported via angular.json */
+
+/* Custom styles that work with Bootstrap */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Primary Button - Dark Blue */
+.btn-primary {
+  background: #3f476e !important;
+  color: #ffffff !important;
+  border: 1px solid #3f476e !important;
+
+  &:hover:not(:disabled) {
+    background: #29196f !important;
+    border-color: #29196f !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #181c80 !important;
+    border-color: #181c80 !important;
+  }
+}
+
+/* Secondary Button - Outlined Dark Blue */
+.btn-secondary {
+  background: transparent !important;
+  color: #3f476e !important;
+  border: 1px solid #3f476e !important;
+
+  &:hover:not(:disabled) {
+    background: rgba(63, 71, 110, 0.1) !important;
+  }
+
+  &:active:not(:disabled) {
+    background: rgba(63, 71, 110, 0.2) !important;
+  }
+}
+
+/* Danger Button - Red */
+.btn-danger {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border: 1px solid #ef4444 !important;
+
+  &:hover:not(:disabled) {
+    background: #fb3434 !important;
+    border-color: #fb3434 !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #b70024 !important;
+    border-color: #b70024 !important;
+  }
+}
+
+/* Success Button - Teal/Green */
+.btn-success {
+  background: #A9D08E !important;
+  color: #2c3e50 !important;
+  border: 1px solid #A9D08E !important;
+
+  &:hover:not(:disabled) {
+    background: #99EDC3 !important;
+    border-color: #99EDC3 !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #95B9C7 !important;
+    border-color: #95B9C7 !important;
+  }
+}
+
+/* Warning Button - Orange */
+.btn-warning {
+  background: #ff4d00 !important;
+  color: #ffffff !important;
+  border: 1px solid #ff4d00 !important;
+
+  &:hover:not(:disabled) {
+    background: #F49D78 !important;
+    border-color: #F49D78 !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #ff4f4f !important;
+    border-color: #ff4f4f !important;
+  }
+}
+
+/* Info Button - Accent Blue */
+.btn-info {
+  background: #4E92F8 !important;
+  color: #ffffff !important;
+  border: 1px solid #4E92F8 !important;
+
+  &:hover:not(:disabled) {
+    background: #409eff !important;
+    border-color: #409eff !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #3498db !important;
+    border-color: #3498db !important;
+  }
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 0.375rem 1rem;
+  font-size: 0.8125rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+}
+
+/* Button Block */
+.btn-block {
+  width: 100%;
+  display: flex;
+}
+
+/* Override Bootstrap's default focus styles */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(78, 146, 248, 0.25) !important;
+  border-color: #4E92F8 !important;
+}
+
+/* Custom form control styles */
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border-color: #e0e0e0;
+  
+  &:focus {
+    border-color: #4E92F8;
+  }
+}
+
+/* Card customization */
+.card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(63, 71, 110, 0.08);
+}
+
+/* Table customization */
+.table {
+  thead {
+    background-color: #3f476e;
+    color: #ffffff;
+    
+    th {
+      border: none;
+      font-weight: 600;
+    }
+  }
+  
+  tbody tr:hover {
+    background-color: rgba(78, 146, 248, 0.05);
+  }
+}
+
+/* Alert customization */
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.alert-primary {
+  background-color: #d6ddf9;
+  color: #3f476e;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  color: #b70024;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.alert-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.alert-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+

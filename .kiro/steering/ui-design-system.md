@@ -1,74 +1,109 @@
 ---
 inclusion: auto
-description: UI design system guidelines for TNS Appraisal Portal including brand colors, typography, spacing, animations, and component patterns
+description: UI design system guidelines for TNS Leave Management Portal including brand colors, typography, spacing, animations, and component patterns
 ---
 
-# UI Design System — TNS Appraisal Form 
+# UI Design System — TNS Leave Management Portal
 
-## Brand Color Palette (derived from Think N Solutions)
+## Brand Color Palette
 
-The palette is anchored in deep navy blues with warm amber/orange accents, reflecting the TnS corporate identity.
+The palette uses indigo/dark blue as the primary brand color with complementary accent colors for various UI states and components.
 
 ### CSS Custom Properties
 
 ```css
 :root {
-  /* Primary — Deep Navy (dominant) */
-  --color-primary-900: #0A1628;
-  --color-primary-800: #0F2240;
-  --color-primary-700: #152E54;
-  --color-primary-600: #1B3A68;
-  --color-primary-500: #1E4D8C;
-  --color-primary-400: #2A6CB8;
-  --color-primary-300: #4A8FD4;
-  --color-primary-200: #7BB3E8;
-  --color-primary-100: #B8D6F5;
-  --color-primary-50:  #E8F2FC;
+  /* Primary Brand Colors — Indigo/Dark Blue */
+  --color-primary-900: #29196f;
+  --color-primary-800: #3f476e;
+  --color-primary-700: #181c80;
+  --color-primary-600: #2c3e50;
+  --color-primary-500: #334155;
+  --color-primary-400: #34495e;
 
-  /* Accent — Warm Amber/Orange (sharp accent) */
-  --color-accent-700: #B45309;
-  --color-accent-600: #D97706;
-  --color-accent-500: #F59E0B;
-  --color-accent-400: #FBBF24;
-  --color-accent-300: #FCD34D;
-  --color-accent-200: #FDE68A;
-  --color-accent-100: #FEF3C7;
+  /* Accent Blue */
+  --color-accent-blue-700: #3498db;
+  --color-accent-blue-600: #409eff;
+  --color-accent-blue-500: #4E92F8;
+  --color-accent-blue-400: #6e6eff;
+  --color-accent-blue-300: #62C3FA;
 
-  /* Neutral — Cool Grays */
-  --color-neutral-900: #111827;
-  --color-neutral-800: #1F2937;
-  --color-neutral-700: #374151;
-  --color-neutral-600: #4B5563;
-  --color-neutral-500: #6B7280;
-  --color-neutral-400: #9CA3AF;
-  --color-neutral-300: #D1D5DB;
-  --color-neutral-200: #E5E7EB;
-  --color-neutral-100: #F3F4F6;
-  --color-neutral-50:  #F9FAFB;
+  /* Soft Teal/Green */
+  --color-teal-500: #95B9C7;
+  --color-teal-400: #99EDC3;
+  --color-teal-300: #B9C66A;
+  --color-teal-200: #A9D08E;
+
+  /* Purple/Pink */
+  --color-purple-600: #CC7AF2;
+  --color-purple-500: #FF6EC7;
+  --color-purple-400: #fac4e6;
+  --color-purple-300: #F44EBC;
+
+  /* Orange/Warning */
+  --color-warning-700: #ff4d00;
+  --color-warning-600: #F49D78;
+  --color-warning-500: #ff4f4f;
+
+  /* Red/Error */
+  --color-danger-900: #b70024;
+  --color-danger-700: #e5087f;
+  --color-danger-600: #fb3434;
+  --color-danger-500: #ef4444;
+
+  /* Disabled/Secondary State */
+  --color-disabled: #c9c9c9;
+
+  /* Neutral/Background Colors */
+  --color-white: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f8f9fa;
+  --color-neutral-150: #f6f6f6;
+  --color-neutral-200: #f1f1f1;
+  --color-neutral-250: #fff5f5;
+  --color-neutral-300: #f0f2f5;
+  --color-neutral-350: #f0f7ff;
+  --color-neutral-400: #f1f3f5;
+  --color-neutral-450: #e7e5e5;
+  --color-neutral-500: #e0e0e0;
+  --color-neutral-550: #dcdfe6;
+  --color-neutral-600: #ccc;
+  --color-neutral-650: #c0c0c0;
+  --color-neutral-700: #bdbdbd;
+  --color-neutral-750: #b8b5b5;
+
+  /* Soft Backgrounds */
+  --color-bg-indigo-light: #d6ddf9;
+  --color-bg-indigo-lighter: #d6d6ff;
+  --color-bg-blue-light: #cae7f6;
+  --color-bg-blue-lighter: #b3c3e6;
+  --color-bg-blue-lightest: #b3d9ff;
+  --color-bg-blue-pale: #D9E1F2;
+  --color-bg-purple-light: #d0c7de;
+  --color-bg-grey-light: #e3e0e0;
+  --color-bg-pink-light: #f9c5f9;
+  --color-bg-pink-lighter: #fae6e7;
+  --color-bg-red-light: #fee2e2;
 
   /* Semantic Colors */
-  --color-success: #059669;
-  --color-success-light: #D1FAE5;
-  --color-warning: #D97706;
-  --color-warning-light: #FEF3C7;
-  --color-danger: #DC2626;
-  --color-danger-light: #FEE2E2;
-  --color-info: #2563EB;
-  --color-info-light: #DBEAFE;
+  --color-success: #A9D08E;
+  --color-success-light: #99EDC3;
+  --color-info: #4E92F8;
+  --color-info-light: #b3d9ff;
 
   /* Surface & Background */
-  --surface-primary: #FFFFFF;
-  --surface-secondary: #F8FAFD;
-  --surface-elevated: #FFFFFF;
-  --surface-dark: #0A1628;
-  --surface-dark-secondary: #0F2240;
+  --surface-primary: #ffffff;
+  --surface-secondary: #f8f9fa;
+  --surface-elevated: #ffffff;
+  --surface-dark: #3f476e;
+  --surface-dark-secondary: #29196f;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(10, 22, 40, 0.06);
-  --shadow-md: 0 4px 12px rgba(10, 22, 40, 0.08);
-  --shadow-lg: 0 12px 32px rgba(10, 22, 40, 0.12);
-  --shadow-xl: 0 20px 48px rgba(10, 22, 40, 0.16);
-  --shadow-glow-accent: 0 0 24px rgba(245, 158, 11, 0.2);
+  --shadow-sm: 0 1px 2px rgba(63, 71, 110, 0.06);
+  --shadow-md: 0 4px 12px rgba(63, 71, 110, 0.08);
+  --shadow-lg: 0 12px 32px rgba(63, 71, 110, 0.12);
+  --shadow-xl: 0 20px 48px rgba(63, 71, 110, 0.16);
+  --shadow-glow-accent: 0 0 24px rgba(78, 146, 248, 0.2);
 }
 ```
 
@@ -177,37 +212,39 @@ Font sources: Use Google Fonts or Fontshare (free). Load via `@import` or `<link
 ## Component Patterns
 
 ### Buttons
-- Primary: solid `--color-accent-500` background, dark text, bold weight
+- Primary: solid `--color-accent-blue-500` background, white text, bold weight
 - Secondary: outlined with `--color-primary-500` border, transparent background
-- Danger (Reject): solid `--color-danger` background, white text
-- Success (Select/Accept): solid `--color-success` background, white text
-- All buttons: 8px border-radius, 12px 24px padding, uppercase tracking-wide text
+- Danger (Reject): solid `--color-danger-600` background, white text
+- Success (Accept): solid `--color-success` background, white text
+- Disabled: `--color-disabled` background, reduced opacity
+- All buttons: 8px border-radius, 12px 24px padding, medium weight text
 
 ### Cards
 - White background, 12px border-radius
-- 3px left border in `--color-accent-500` for active/highlighted cards
-- Hover: lift + shadow-lg + subtle amber glow
+- 3px left border in `--color-accent-blue-500` for active/highlighted cards
+- Hover: lift + shadow-lg + subtle blue glow
 
 ### Tables
-- Striped rows with alternating `--surface-primary` and `--surface-secondary`
-- Header row: `--color-primary-800` background, white text, uppercase tracking-wider
-- Row hover: light amber tint (`--color-accent-100`)
+- Striped rows with alternating `--surface-primary` and `--color-neutral-100`
+- Header row: `--color-primary-800` background, white text, medium weight
+- Row hover: light blue tint (`--color-bg-blue-lightest`)
 - Sticky header on scroll
 
 ### Forms
-- Input fields: 8px border-radius, 1px `--color-neutral-300` border
-- Focus state: 2px `--color-accent-500` border with `--shadow-glow-accent`
-- Labels: `--font-body` semibold, `--color-neutral-700`
-- Error states: `--color-danger` border + light red background
+- Input fields: 8px border-radius, 1px `--color-neutral-500` border
+- Focus state: 2px `--color-accent-blue-500` border with `--shadow-glow-accent`
+- Labels: `--font-body` semibold, `--color-primary-600`
+- Error states: `--color-danger-600` border + `--color-bg-red-light` background
+- Disabled state: `--color-disabled` border and background
 
 ### Status Badges
 ```
-SUBMITTED       → --color-neutral-500 bg, white text
-UNDER_REVIEW    → --color-info bg, white text
-SCREENING_PASSED → --color-accent-500 bg, dark text
-CALL_COMPLETED  → --color-primary-500 bg, white text
-ACCEPTED        → --color-success bg, white text
-REJECTED        → --color-danger bg, white text
+PENDING         → --color-warning-600 bg, white text
+APPROVED        → --color-success bg, white text
+REJECTED        → --color-danger-600 bg, white text
+IN_PROGRESS     → --color-accent-blue-500 bg, white text
+COMPLETED       → --color-teal-200 bg, dark text
+CANCELLED       → --color-neutral-600 bg, white text
 ```
 
 ## Layout Structure

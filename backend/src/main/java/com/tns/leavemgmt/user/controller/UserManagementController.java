@@ -82,15 +82,24 @@ public class UserManagementController {
         return ResponseEntity.ok(response);
     }
 
+    /** GET /api/admin/users/{userId} — Get user by ID (Req 2.1) */
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
+        UserResponse user = userService.getUserById(userId);
+        return ResponseEntity.ok(user);
+    }
+
     /** PUT /api/admin/users/{userId} — Update user profile (Req 2.1) */
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(
+    public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long userId,
             @Valid @RequestBody UpdateUserRequest request,
             @AuthenticationPrincipal UserDetails principal) {
         User admin = resolveUser(principal);
-        User updated = userService.updateUser(userId, request, admin);
-        return ResponseEntity.ok(updated);
+        userService.updateUser(userId, request, admin);
+        // Fetch updated user with relationships
+        UserResponse response = userService.getUserById(userId);
+        return ResponseEntity.ok(response);
     }
 
     /** POST /api/admin/users/{userId}/roles — Assign roles to user (Req 3.1) */
@@ -112,6 +121,30 @@ public class UserManagementController {
         User admin = resolveUser(principal);
         userService.deactivateUser(userId, admin);
         return ResponseEntity.ok(Map.of("message", "User account deactivated successfully"));
+    }
+
+    /** PUT /api/admin/users/{userId}/status — Set user account status (activate/deactivate) */
+    @PutMapping("/{userId}/status")
+    public ResponseEntity<UserResponse> setUserStatus(
+            @PathVariable Long userId,
+            @RequestBody Map<String, Boolean> request,
+            @AuthenticationPrincipal UserDetails principal) {
+        User admin = resolveUser(principal);
+        Boolean active = request.get("active");
+        
+        if (active == null) {
+            throw new IllegalArgumentException("'active' field is required");
+        }
+        
+        if (active) {
+            userService.reactivateUser(userId, admin);
+        } else {
+            userService.deactivateUser(userId, admin);
+        }
+        
+        // Fetch updated user with relationships
+        UserResponse response = userService.getUserById(userId);
+        return ResponseEntity.ok(response);
     }
 
     /** POST /api/admin/users/{userId}/reset-password — Reset user password (Req 1.1) */

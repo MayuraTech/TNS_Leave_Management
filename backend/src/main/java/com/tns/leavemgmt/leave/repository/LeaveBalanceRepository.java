@@ -3,6 +3,7 @@ package com.tns.leavemgmt.leave.repository;
 import com.tns.leavemgmt.entity.LeaveBalance;
 import com.tns.leavemgmt.entity.LeaveType;
 import com.tns.leavemgmt.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,14 @@ public interface LeaveBalanceRepository extends JpaRepository<LeaveBalance, Long
 
     @Query("SELECT lb FROM LeaveBalance lb WHERE lb.year = :year AND lb.user.department.id = :departmentId")
     List<LeaveBalance> findByYearAndDepartment(@Param("year") int year, @Param("departmentId") Long departmentId);
+
+    /**
+     * Finds leave balances by year and department with user, user.department, and leaveType eagerly fetched.
+     * This prevents LazyInitializationException when accessing these relationships in reports.
+     */
+    @EntityGraph(attributePaths = {"user", "user.department", "leaveType"})
+    @Query("SELECT lb FROM LeaveBalance lb WHERE lb.year = :year " +
+           "AND (:departmentId IS NULL OR lb.user.department.id = :departmentId)")
+    List<LeaveBalance> findByYearAndDepartmentWithRelationships(@Param("year") int year, 
+                                                                 @Param("departmentId") Long departmentId);
 }

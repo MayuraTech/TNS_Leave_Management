@@ -74,7 +74,7 @@ public class LeaveReportService {
     public List<LeaveBalanceReportItem> getLeaveBalancesByDepartment(Long departmentId) {
         int currentYear = LocalDate.now().getYear();
         List<LeaveBalance> balances = leaveBalanceRepository
-                .findByYearAndDepartment(currentYear, departmentId);
+                .findByYearAndDepartmentWithRelationships(currentYear, departmentId);
 
         return balances.stream()
                 .map(lb -> {

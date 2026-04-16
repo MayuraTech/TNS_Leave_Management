@@ -126,8 +126,8 @@ import { PolicyService, PublicHoliday, PublicHolidayPayload } from '../../../cor
           </thead>
           <tbody>
             <tr *ngFor="let h of holidays" class="table-row">
-              <td class="cell-date">{{ h.holidayDate | date:'mediumDate' }}</td>
-              <td class="cell-day">{{ h.holidayDate | date:'EEEE' }}</td>
+              <td class="cell-date">{{ h.date | date:'mediumDate' }}</td>
+              <td class="cell-day">{{ h.date | date:'EEEE' }}</td>
               <td class="cell-name">{{ h.name }}</td>
               <td class="cell-actions">
                 <button class="btn-delete" (click)="onDelete(h)"
@@ -541,7 +541,7 @@ export class HolidayManagementComponent implements OnInit {
     this.loadError = null;
     this.policyService.getPublicHolidays(this.selectedYear).subscribe({
       next: (data) => {
-        this.holidays = data.sort((a, b) => a.holidayDate.localeCompare(b.holidayDate));
+        this.holidays = data.sort((a, b) => a.date.localeCompare(b.date));
         this.loading = false;
       },
       error: () => {

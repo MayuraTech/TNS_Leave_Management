@@ -122,7 +122,7 @@ import { LeaveBalanceReportItem, Department } from '../../../core/models/report.
             <tbody>
               <tr *ngFor="let row of reportData; let odd = odd" [class.row--odd]="odd">
                 <td class="cell--name">{{ row.employeeName }}</td>
-                <td>{{ row.departmentName }}</td>
+                <td>{{ row.department }}</td>
                 <td>
                   <span class="badge badge--type">{{ row.leaveTypeName }}</span>
                 </td>

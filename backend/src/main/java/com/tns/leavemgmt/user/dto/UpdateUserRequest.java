@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class UpdateUserRequest {
     private String phone;
     private String emergencyContact;
     private String address;
+    private Long departmentId;
+    private Long managerId;
+    private Set<String> roles;
 }

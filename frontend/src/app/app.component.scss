@@ -1,0 +1,19 @@
+.main-content {
+  position: fixed;
+  left: 0;
+  top: 64px; // Space for fixed header
+  right: 0;
+  bottom: 0; // Add bottom constraint
+  transition: left 0.3s ease;
+  background: #F3F4F6;
+  padding: 20px 20px 20px 10px; // Reduced left padding
+  overflow-y: auto; // Enable vertical scrolling
+  overflow-x: hidden; // Prevent horizontal scrolling
+
+  // On desktop, adjust position when sidebar is open
+  @media (min-width: 768px) {
+    &.sidebar-open {
+      left: 260px; // Match sidebar width
+    }
+  }
+}

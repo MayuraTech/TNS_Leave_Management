@@ -1,48 +1,105 @@
-.sidebar {
-  width: 220px;
-  min-height: 100%;
-  background-color: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
-  padding: 1rem 0;
+// Overlay for mobile
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(63, 71, 110, 0.5);
+  z-index: 1000;
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+  }
 }
 
-.nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+// Sidebar
+.sidebar {
+  position: fixed;
+  top: 64px; // Below header
+  left: 0;
+  height: calc(100vh - 64px); // Full height minus header
+  width: 260px;
+  background: #3f476e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 1050;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 12px rgba(63, 71, 110, 0.1);
+
+  // Mobile: hidden by default, show when open
+  @media (max-width: 767px) {
+    transform: translateX(-100%);
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  // Desktop: visible by default, hide when not open
+  @media (min-width: 768px) {
+    transform: translateX(0);
+    
+    &:not(.open) {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+// Navigation
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 
 .nav-item {
-  margin: 0.15rem 0.5rem;
-}
-
-.nav-link {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 6px;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #b3d9ff;
   text-decoration: none;
-  color: #424242;
-  font-size: 0.9rem;
-  transition: background-color 0.2s, color 0.2s;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
 
   &:hover {
-    background-color: #e3e8f0;
-    color: #1a237e;
+    background: rgba(78, 146, 248, 0.1);
+    color: #4E92F8;
+    border-left-color: #4E92F8;
   }
 
   &.active {
-    background-color: #e8eaf6;
-    color: #1a237e;
-    font-weight: 500;
+    background: rgba(78, 146, 248, 0.15);
+    color: #4E92F8;
+    border-left-color: #4E92F8;
+    font-weight: 600;
   }
 }
 
 .nav-icon {
-  font-size: 1rem;
-  width: 1.25rem;
+  font-size: 1.25rem;
+  width: 24px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .nav-label {

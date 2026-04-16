@@ -1,6 +1,7 @@
 package com.tns.leavemgmt.user.service;
 
 import com.tns.leavemgmt.service.AuditService;
+import com.tns.leavemgmt.service.LeaveBalanceService;
 import com.tns.leavemgmt.exception.DuplicateUserException;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.notification.NotificationService;
@@ -41,6 +42,8 @@ public class UserService {
     private final PasswordService passwordService;
     private final NotificationService notificationService;
     private final AuditService auditService;
+    private final LeaveBalanceService leaveBalanceService;
+    private final ManagerRelationshipService managerRelationshipService;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
@@ -48,7 +51,9 @@ public class UserService {
                        TeamRepository teamRepository,
                        PasswordService passwordService,
                        NotificationService notificationService,
-                       AuditService auditService) {
+                       AuditService auditService,
+                       LeaveBalanceService leaveBalanceService,
+                       ManagerRelationshipService managerRelationshipService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.departmentRepository = departmentRepository;
@@ -56,6 +61,8 @@ public class UserService {
         this.passwordService = passwordService;
         this.notificationService = notificationService;
         this.auditService = auditService;
+        this.leaveBalanceService = leaveBalanceService;
+        this.managerRelationshipService = managerRelationshipService;
     }
 
     @Transactional
@@ -122,14 +129,22 @@ public class UserService {
                     user.getUsername(), user.getEmail(), 
                     user.getDepartment() != null ? user.getDepartment().getId() : null);
 
-            // 10. Trigger email notification
+            // 10. Initialize leave balances for all active leave types
+            try {
+                leaveBalanceService.initializeBalancesForNewUser(user);
+                log.info("Initialized leave balances for user: {}", user.getUsername());
+            } catch (Exception e) {
+                log.warn("Failed to initialize leave balances for user {}: {}", user.getUsername(), e.getMessage());
+            }
+
+            // 11. Trigger email notification
             try {
                 notificationService.sendAccountCreatedEmail(user, temporaryPassword);
             } catch (Exception e) {
                 log.warn("Failed to send account creation email to {}: {}", user.getEmail(), e.getMessage());
             }
 
-            // 11. Return response
+            // 12. Return response
             return CreateUserResponse.builder()
                     .userId(user.getId())
                     .username(user.getUsername())
@@ -164,7 +179,7 @@ public class UserService {
         // Capture old values for audit
         Map<String, String> oldValues = captureUserFields(user);
 
-        // Apply updates
+        // Apply basic profile updates
         if (request.getUsername() != null)        user.setUsername(request.getUsername());
         if (request.getEmail() != null)           user.setEmail(request.getEmail());
         if (request.getFirstName() != null)       user.setFirstName(request.getFirstName());
@@ -172,6 +187,30 @@ public class UserService {
         if (request.getPhone() != null)           user.setPhone(request.getPhone());
         if (request.getEmergencyContact() != null) user.setEmergencyContact(request.getEmergencyContact());
         if (request.getAddress() != null)         user.setAddress(request.getAddress());
+
+        // Update department if provided
+        if (request.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
+            user.setDepartment(department);
+            log.info("Updated user department: userId={}, departmentId={}", userId, request.getDepartmentId());
+        }
+
+        // Update manager if provided - use ManagerRelationshipService
+        if (request.getManagerId() != null) {
+            managerRelationshipService.assignManager(userId, request.getManagerId(), performedBy);
+            log.info("Updated user manager: userId={}, managerId={}", userId, request.getManagerId());
+        }
+
+        // Update roles if provided
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            Set<Role> roles = request.getRoles().stream()
+                    .map(roleName -> roleRepository.findByName(roleName)
+                            .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName)))
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
+            log.info("Updated user roles: userId={}, roles={}", userId, request.getRoles());
+        }
 
         user = userRepository.save(user);
         log.info("Updated user profile: userId={} by={}", userId, performedBy.getUsername());
@@ -211,7 +250,11 @@ public class UserService {
         userRepository.save(user);
         log.info("Reactivated user account: userId={} by={}", userId, performedBy.getUsername());
 
-        notificationService.sendPasswordResetEmail(user, temporaryPassword);
+        try {
+            notificationService.sendPasswordResetEmail(user, temporaryPassword);
+        } catch (Exception e) {
+            log.warn("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
+        }
 
         auditService.recordAudit("User", userId, "ACCOUNT_REACTIVATED",
                 "isActive=false", "isActive=true", performedBy);
@@ -228,7 +271,11 @@ public class UserService {
 
         log.info("Password reset for userId={} by={}", userId, performedBy.getUsername());
 
-        notificationService.sendPasswordResetEmail(user, temporaryPassword);
+        try {
+            notificationService.sendPasswordResetEmail(user, temporaryPassword);
+        } catch (Exception e) {
+            log.warn("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
+        }
 
         auditService.recordAudit("User", userId, "PASSWORD_RESET",
                 null, "Password reset and emailed to user", performedBy);
@@ -247,10 +294,43 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    private UserResponse toUserResponse(User user) {
-        Set<String> roleNames = user.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toSet());
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(Long userId) {
+        log.info("Fetching user by ID: {}", userId);
+        try {
+            User user = userRepository.findByIdWithRelations(userId)
+                    .orElseThrow(() -> ResourceNotFoundException.forUser(userId));
+            log.info("Found user: username={}, email={}, roles={}", 
+                    user.getUsername(), user.getEmail(), 
+                    user.getRoles() != null ? user.getRoles().size() : 0);
+            return toUserResponse(user);
+        } catch (Exception e) {
+            log.error("Error fetching user by ID {}: {}", userId, e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    public UserResponse convertToUserResponse(User user) {
+        Set<String> roleNames = user.getRoles() != null 
+                ? user.getRoles().stream()
+                    .map(Role::getName)
+                    .collect(Collectors.toSet())
+                : Set.of();
+        
+        // Get manager information from manager-employee relationship
+        Long managerId = null;
+        String managerName = null;
+        try {
+            var managerRelationship = managerRelationshipService.getManagerForEmployee(user.getId());
+            if (managerRelationship.isPresent()) {
+                User manager = managerRelationship.get().getManager();
+                managerId = manager.getId();
+                managerName = manager.getFirstName() + " " + manager.getLastName();
+            }
+        } catch (Exception e) {
+            log.warn("Failed to fetch manager for user {}: {}", user.getId(), e.getMessage());
+        }
+                
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -263,8 +343,14 @@ public class UserService {
                 .roles(roleNames)
                 .departmentId(user.getDepartment() != null ? user.getDepartment().getId() : null)
                 .departmentName(user.getDepartment() != null ? user.getDepartment().getName() : null)
+                .managerId(managerId)
+                .managerName(managerName)
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+
+    private UserResponse toUserResponse(User user) {
+        return convertToUserResponse(user);
     }
 
     private Map<String, String> captureUserFields(User user) {

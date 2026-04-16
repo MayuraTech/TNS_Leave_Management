@@ -25,5 +25,7 @@ public class UserResponse {
     private Set<String> roles;
     private Long departmentId;
     private String departmentName;
+    private Long managerId;
+    private String managerName;
     private LocalDateTime createdAt;
 }

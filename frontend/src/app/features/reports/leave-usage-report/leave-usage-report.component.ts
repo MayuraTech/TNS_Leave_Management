@@ -111,27 +111,23 @@ import { LeaveUsageReportItem, Department, ReportFilters } from '../../../core/m
           <table class="data-table" aria-label="Leave usage report results">
             <thead>
               <tr>
-                <th scope="col">Employee</th>
-                <th scope="col">Department</th>
                 <th scope="col">Leave Type</th>
-                <th scope="col" class="text-right">Requests</th>
+                <th scope="col" class="text-right">Total Requests</th>
                 <th scope="col" class="text-right">Total Days</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let row of reportData; let odd = odd" [class.row--odd]="odd">
-                <td class="cell--name">{{ row.employeeName }}</td>
-                <td>{{ row.departmentName }}</td>
                 <td>
                   <span class="badge badge--type">{{ row.leaveTypeName }}</span>
                 </td>
-                <td class="text-right">{{ row.requestCount }}</td>
+                <td class="text-right">{{ row.totalRequests }}</td>
                 <td class="text-right cell--days">{{ row.totalDays | number:'1.1-1' }}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr class="totals-row">
-                <td colspan="3" class="totals-label">Totals</td>
+                <td class="totals-label">Totals</td>
                 <td class="text-right">{{ totalRequests }}</td>
                 <td class="text-right">{{ totalDays | number:'1.1-1' }}</td>
               </tr>
@@ -514,9 +510,14 @@ export class LeaveUsageReportComponent implements OnInit {
     private fb: FormBuilder,
     private reportService: ReportService
   ) {
+    // Set default date range to current year
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const yearEnd = new Date(now.getFullYear(), 11, 31);
+    
     this.filterForm = this.fb.group({
-      startDate: [''],
-      endDate: [''],
+      startDate: [this.formatDate(yearStart)],
+      endDate: [this.formatDate(yearEnd)],
       departmentId: ['']
     });
   }
@@ -526,12 +527,16 @@ export class LeaveUsageReportComponent implements OnInit {
     this.loadReport();
   }
 
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
   get totalDays(): number {
     return this.reportData.reduce((sum, row) => sum + row.totalDays, 0);
   }
 
   get totalRequests(): number {
-    return this.reportData.reduce((sum, row) => sum + row.requestCount, 0);
+    return this.reportData.reduce((sum, row) => sum + row.totalRequests, 0);
   }
 
   loadDepartments(): void {
@@ -565,7 +570,15 @@ export class LeaveUsageReportComponent implements OnInit {
   }
 
   resetFilters(): void {
-    this.filterForm.reset({ startDate: '', endDate: '', departmentId: '' });
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const yearEnd = new Date(now.getFullYear(), 11, 31);
+    
+    this.filterForm.reset({
+      startDate: this.formatDate(yearStart),
+      endDate: this.formatDate(yearEnd),
+      departmentId: ''
+    });
     this.loadReport();
   }
 

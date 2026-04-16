@@ -73,12 +73,17 @@ import { AuthService } from '../../../core/auth/auth.service';
   `,
   styles: [`
     .login-wrapper {
-      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #f0f2f5;
       padding: 1rem;
+      z-index: 2000;
     }
 
     .login-card {
@@ -98,7 +103,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     .login-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #1a1a2e;
+      color: #3f476e;
       margin: 0 0 0.25rem;
     }
 
@@ -157,8 +162,8 @@ import { AuthService } from '../../../core/auth/auth.service';
     }
 
     input:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+      border-color: #4E92F8;
+      box-shadow: 0 0 0 3px rgba(78, 146, 248, 0.1);
     }
 
     input.input-error {
@@ -173,7 +178,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     .btn-submit {
       width: 100%;
       padding: 0.7rem;
-      background: #4f46e5;
+      background: #3f476e;
       color: #fff;
       border: none;
       border-radius: 6px;
@@ -185,11 +190,11 @@ import { AuthService } from '../../../core/auth/auth.service';
     }
 
     .btn-submit:hover:not(:disabled) {
-      background: #4338ca;
+      background: #29196f;
     }
 
     .btn-submit:disabled {
-      background: #a5b4fc;
+      background: #c9c9c9;
       cursor: not-allowed;
     }
   `]
@@ -213,7 +218,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/leave']);
+      this.router.navigate(['/dashboard']);
     }
   }
 
@@ -237,7 +242,7 @@ export class LoginComponent implements OnInit {
     this.authService.login({ usernameOrEmail, password }).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/leave']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

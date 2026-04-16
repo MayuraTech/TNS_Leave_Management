@@ -47,6 +47,38 @@ public class LeaveBalanceService {
     }
 
     /**
+     * Initialize leave balances for a newly created user.
+     * Creates balance records for all active leave types with initial accrual based on monthly rate.
+     */
+    public void initializeBalancesForNewUser(User user) {
+        int currentYear = LocalDate.now().getYear();
+        List<LeaveType> activeLeaveTypes = leaveTypeRepository.findByIsActiveTrue();
+
+        for (LeaveType leaveType : activeLeaveTypes) {
+            // Check if balance already exists
+            boolean exists = leaveBalanceRepository
+                .findByUserAndLeaveTypeAndYear(user, leaveType, currentYear)
+                .isPresent();
+
+            if (!exists) {
+                // Calculate initial balance based on monthly accrual rate
+                BigDecimal monthlyAccrual = BigDecimal.valueOf(leaveType.getAccrualRate());
+                
+                LeaveBalance balance = new LeaveBalance();
+                balance.setUser(user);
+                balance.setLeaveType(leaveType);
+                balance.setYear(currentYear);
+                balance.setAvailableDays(monthlyAccrual);
+                balance.setAccruedDays(monthlyAccrual);
+                balance.setUsedDays(BigDecimal.ZERO);
+                balance.setAvailableHours(BigDecimal.ZERO);
+                balance.setUsedHours(BigDecimal.ZERO);
+                leaveBalanceRepository.save(balance);
+            }
+        }
+    }
+
+    /**
      * Returns the available days balance for the given user and leave type (current year).
      * Requirement 9.1
      */

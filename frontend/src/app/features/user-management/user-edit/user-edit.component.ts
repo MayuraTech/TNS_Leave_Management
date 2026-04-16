@@ -6,6 +6,7 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { UserService, Department } from '../../../core/services/user.service';
 import { User, UserRole } from '../../../core/models/user.model';
 import { NotificationService } from '../../../core/services/notification.service';
+import { UserBalanceAdjustmentComponent } from '../user-balance-adjustment/user-balance-adjustment.component';
 
 const ALL_ROLES: UserRole[] = ['EMPLOYEE', 'MANAGER', 'ADMINISTRATOR'];
 
@@ -18,7 +19,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, UserBalanceAdjustmentComponent],
   template: `
     <div class="page-container">
       <div class="page-header">
@@ -196,6 +197,9 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
           </form>
         </div>
 
+        <!-- Leave Balance Adjustment Section -->
+        <app-user-balance-adjustment [userId]="userId"></app-user-balance-adjustment>
+
       </ng-container>
     </div>
   `,
@@ -324,7 +328,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
   isResettingPassword = false;
   passwordError = '';
 
-  private userId!: number;
+  userId!: number;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -395,7 +399,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
 
     this.rolesForm.patchValue({
       departmentId: user.departmentId ?? '',
-      managerId: user.teamId ?? ''
+      managerId: user.managerId ?? ''
     });
   }
 

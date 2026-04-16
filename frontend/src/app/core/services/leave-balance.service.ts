@@ -22,6 +22,13 @@ export class LeaveBalanceService {
   }
 
   /**
+   * Admin: Get leave balances for a specific user
+   */
+  getUserBalances(userId: number): Observable<LeaveBalance[]> {
+    return this.api.get<LeaveBalance[]>(`/admin/users/${userId}/leave-balance`);
+  }
+
+  /**
    * Admin: Manually adjust a user's leave balance
    */
   adjustBalance(request: BalanceAdjustmentRequest): Observable<LeaveBalance> {
@@ -33,5 +40,12 @@ export class LeaveBalanceService {
    */
   processAccrual(): Observable<{ processedCount: number }> {
     return this.api.post<{ processedCount: number }>('/admin/accrual/process', {});
+  }
+
+  /**
+   * Admin: Initialize leave balances for a user based on monthly accrual rates
+   */
+  initializeUserBalances(userId: number): Observable<{ message: string; balances: LeaveBalance[] }> {
+    return this.api.post<{ message: string; balances: LeaveBalance[] }>(`/admin/users/${userId}/initialize-balances`, {});
   }
 }
