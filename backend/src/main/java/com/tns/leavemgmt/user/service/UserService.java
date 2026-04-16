@@ -9,9 +9,13 @@ import com.tns.leavemgmt.user.dto.CreateUserRequest;
 import com.tns.leavemgmt.user.dto.CreateUserResponse;
 import com.tns.leavemgmt.user.dto.UpdateUserRequest;
 import com.tns.leavemgmt.user.dto.UserResponse;
+import com.tns.leavemgmt.entity.Department;
 import com.tns.leavemgmt.entity.Role;
+import com.tns.leavemgmt.entity.Team;
 import com.tns.leavemgmt.entity.User;
+import com.tns.leavemgmt.user.repository.DepartmentRepository;
 import com.tns.leavemgmt.user.repository.RoleRepository;
+import com.tns.leavemgmt.user.repository.TeamRepository;
 import com.tns.leavemgmt.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,17 +36,23 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final DepartmentRepository departmentRepository;
+    private final TeamRepository teamRepository;
     private final PasswordService passwordService;
     private final NotificationService notificationService;
     private final AuditService auditService;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
+                       DepartmentRepository departmentRepository,
+                       TeamRepository teamRepository,
                        PasswordService passwordService,
                        NotificationService notificationService,
                        AuditService auditService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.departmentRepository = departmentRepository;
+        this.teamRepository = teamRepository;
         this.passwordService = passwordService;
         this.notificationService = notificationService;
         this.auditService = auditService;
@@ -50,52 +60,86 @@ public class UserService {
 
     @Transactional
     public CreateUserResponse createUser(CreateUserRequest request) {
-        // 1. Check username uniqueness
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw DuplicateUserException.forUsername(request.getUsername());
+        try {
+            log.info("Creating user with username: {}, email: {}, roles: {}", 
+                    request.getUsername(), request.getEmail(), request.getRoles());
+            
+            // 1. Check username uniqueness
+            if (userRepository.existsByUsername(request.getUsername())) {
+                throw DuplicateUserException.forUsername(request.getUsername());
+            }
+
+            // 2. Check email uniqueness
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw DuplicateUserException.forEmail(request.getEmail());
+            }
+
+            // 3. Generate temporary password
+            String temporaryPassword = passwordService.generateTemporaryPassword();
+
+            // 4. Hash the temporary password
+            String hashedPassword = passwordService.hashPassword(temporaryPassword);
+
+            // 5. Resolve Role entities from role names
+            Set<Role> roles = request.getRoles().stream()
+                    .map(roleName -> roleRepository.findByName(roleName)
+                            .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName)))
+                    .collect(Collectors.toSet());
+
+            // 6. Resolve Department if provided
+            Department department = null;
+            if (request.getDepartmentId() != null) {
+                department = departmentRepository.findById(request.getDepartmentId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
+            }
+
+            // 7. Resolve Team (manager) if provided
+            Team team = null;
+            if (request.getManagerId() != null) {
+                team = teamRepository.findById(request.getManagerId())
+                        .orElse(null);
+            }
+
+            // 8. Build User entity
+            User user = User.builder()
+                    .username(request.getUsername())
+                    .email(request.getEmail())
+                    .firstName(request.getFirstName())
+                    .lastName(request.getLastName())
+                    .phone(request.getPhone())
+                    .emergencyContact(request.getEmergencyContact())
+                    .address(request.getAddress())
+                    .passwordHash(hashedPassword)
+                    .isActive(true)
+                    .roles(roles)
+                    .department(department)
+                    .team(team)
+                    .build();
+
+            // 9. Save user first (required before setting relationships)
+            user = userRepository.save(user);
+            log.info("Created user account: username={}, email={}, departmentId={}", 
+                    user.getUsername(), user.getEmail(), 
+                    user.getDepartment() != null ? user.getDepartment().getId() : null);
+
+            // 10. Trigger email notification
+            try {
+                notificationService.sendAccountCreatedEmail(user, temporaryPassword);
+            } catch (Exception e) {
+                log.warn("Failed to send account creation email to {}: {}", user.getEmail(), e.getMessage());
+            }
+
+            // 11. Return response
+            return CreateUserResponse.builder()
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .temporaryPassword(temporaryPassword)
+                    .build();
+        } catch (Exception e) {
+            log.error("Error creating user: {}", e.getMessage(), e);
+            throw e;
         }
-
-        // 2. Check email uniqueness
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw DuplicateUserException.forEmail(request.getEmail());
-        }
-
-        // 3. Generate temporary password
-        String temporaryPassword = passwordService.generateTemporaryPassword();
-
-        // 4. Hash the temporary password
-        String hashedPassword = passwordService.hashPassword(temporaryPassword);
-
-        // 5. Resolve Role entities from role names
-        Set<Role> roles = request.getRoles().stream()
-                .map(roleName -> roleRepository.findByName(roleName)
-                        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName)))
-                .collect(Collectors.toSet());
-
-        // 6. Build and save User entity
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .passwordHash(hashedPassword)
-                .isActive(true)
-                .roles(roles)
-                .build();
-
-        user = userRepository.save(user);
-        log.info("Created user account: username={}, email={}", user.getUsername(), user.getEmail());
-
-        // 7. Trigger email notification
-        notificationService.sendAccountCreatedEmail(user, temporaryPassword);
-
-        // 8. Return response
-        return CreateUserResponse.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .temporaryPassword(temporaryPassword)
-                .build();
     }
 
     @Transactional
@@ -191,13 +235,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> getUsers(int page, int size, Long departmentId, Boolean active) {
+    public List<UserResponse> getUsers(int page, int size, Long departmentId, Boolean active, String role) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> users = userRepository.findAll(pageable);
-        return users.stream()
-                .filter(u -> departmentId == null
-                        || (u.getDepartment() != null && u.getDepartment().getId().equals(departmentId)))
+        Page<User> usersPage = userRepository.findAll(pageable);
+        
+        return usersPage.stream()
+                .filter(u -> departmentId == null || (u.getDepartment() != null && u.getDepartment().getId().equals(departmentId)))
                 .filter(u -> active == null || u.getIsActive().equals(active))
+                .filter(u -> role == null || u.getRoles().stream().anyMatch(r -> r.getName().equalsIgnoreCase(role)))
                 .map(this::toUserResponse)
                 .collect(Collectors.toList());
     }

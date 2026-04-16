@@ -27,6 +27,15 @@ public class LeaveType {
     private String description;
 
     @Column(nullable = false)
+    private Double accrualRate;
+
+    @Column(nullable = false)
+    private Integer maxCarryOverDays;
+
+    @Column(nullable = false)
+    private Integer minNoticeDays;
+
+    @Column(nullable = false)
     @Builder.Default
     private boolean isActive = true;
 

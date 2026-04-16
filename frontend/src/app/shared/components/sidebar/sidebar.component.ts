@@ -23,6 +23,8 @@ export class SidebarComponent implements OnInit {
     { label: 'Apply Leave', route: '/leave/new', icon: '➕' },
     { label: 'Approvals', route: '/approval', icon: '✅', roles: ['MANAGER', 'ADMINISTRATOR'] },
     { label: 'Users', route: '/admin/users', icon: '👥', roles: ['ADMINISTRATOR'] },
+    { label: 'Departments', route: '/admin/users/departments', icon: '🏢', roles: ['ADMINISTRATOR'] },
+    { label: 'Teams', route: '/admin/users/teams', icon: '👨‍👩‍👧‍👦', roles: ['ADMINISTRATOR'] },
     { label: 'Leave Policy', route: '/admin/policy', icon: '📜', roles: ['ADMINISTRATOR'] },
     { label: 'Reports', route: '/admin/reports', icon: '📊', roles: ['ADMINISTRATOR'] },
     { label: 'Audit Trail', route: '/admin/reports/audit', icon: '🔍', roles: ['ADMINISTRATOR'] }

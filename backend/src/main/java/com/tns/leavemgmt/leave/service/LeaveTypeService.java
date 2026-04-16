@@ -33,6 +33,9 @@ public class LeaveTypeService {
         LeaveType leaveType = LeaveType.builder()
                 .name(request.getName())
                 .description(request.getDescription())
+                .accrualRate(request.getAccrualRate())
+                .maxCarryOverDays(request.getMaxCarryOverDays())
+                .minNoticeDays(request.getMinNoticeDays())
                 .isActive(true)
                 .build();
 
@@ -55,6 +58,15 @@ public class LeaveTypeService {
         }
         if (request.getDescription() != null) {
             leaveType.setDescription(request.getDescription());
+        }
+        if (request.getAccrualRate() != null) {
+            leaveType.setAccrualRate(request.getAccrualRate());
+        }
+        if (request.getMaxCarryOverDays() != null) {
+            leaveType.setMaxCarryOverDays(request.getMaxCarryOverDays());
+        }
+        if (request.getMinNoticeDays() != null) {
+            leaveType.setMinNoticeDays(request.getMinNoticeDays());
         }
         if (request.getIsActive() != null) {
             leaveType.setActive(request.getIsActive());
@@ -102,6 +114,9 @@ public class LeaveTypeService {
                 .id(leaveType.getId())
                 .name(leaveType.getName())
                 .description(leaveType.getDescription())
+                .accrualRate(leaveType.getAccrualRate())
+                .maxCarryOverDays(leaveType.getMaxCarryOverDays())
+                .minNoticeDays(leaveType.getMinNoticeDays())
                 .isActive(leaveType.isActive())
                 .createdAt(leaveType.getCreatedAt())
                 .build();

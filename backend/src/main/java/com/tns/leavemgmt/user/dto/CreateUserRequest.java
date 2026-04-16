@@ -29,6 +29,12 @@ public class CreateUserRequest {
     @NotBlank
     private String lastName;
 
+    private String phone;
+
+    private String emergencyContact;
+
+    private String address;
+
     @NotEmpty
     private Set<String> roles;
 

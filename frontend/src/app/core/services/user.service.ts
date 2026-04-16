@@ -46,6 +46,9 @@ export interface CreateUserRequest {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
+  emergencyContact?: string;
+  address?: string;
   roles: UserRole[];
   departmentId?: number;
   managerId?: number;
@@ -112,31 +115,31 @@ export class UserService {
   }
 
   getUserById(id: number): Observable<User> {
-    return this.api.get<User>(`/api/admin/users/${id}`);
+    return this.api.get<User>(`/admin/users/${id}`);
   }
 
   updateUser(id: number, request: UpdateUserRequest): Observable<User> {
-    return this.api.put<User>(`/api/admin/users/${id}`, request);
+    return this.api.put<User>(`/admin/users/${id}`, request);
   }
 
   resetPassword(id: number, request: ResetPasswordRequest): Observable<void> {
-    return this.api.post<void>(`/api/admin/users/${id}/reset-password`, request);
+    return this.api.post<void>(`/admin/users/${id}/reset-password`, request);
   }
 
   setUserStatus(id: number, active: boolean): Observable<User> {
-    return this.api.put<User>(`/api/admin/users/${id}/status`, { active });
+    return this.api.put<User>(`/admin/users/${id}/status`, { active });
   }
 
   deactivateUser(id: number): Observable<void> {
-    return this.api.post<void>(`/api/admin/users/${id}/deactivate`, {});
+    return this.api.post<void>(`/admin/users/${id}/deactivate`, {});
   }
 
   assignManager(userId: number, managerId: number): Observable<void> {
-    return this.api.put<void>(`/api/admin/users/${userId}/manager`, { managerId });
+    return this.api.put<void>(`/admin/users/${userId}/manager`, { managerId });
   }
 
   assignRoles(userId: number, roles: string[]): Observable<User> {
-    return this.api.post<User>(`/api/admin/users/${userId}/roles`, { roles });
+    return this.api.post<User>(`/admin/users/${userId}/roles`, { roles });
   }
 
   createDepartment(request: CreateDepartmentRequest): Observable<Department> {
@@ -144,11 +147,11 @@ export class UserService {
   }
 
   updateDepartment(id: number, request: UpdateDepartmentRequest): Observable<Department> {
-    return this.api.put<Department>(`/api/admin/departments/${id}`, request);
+    return this.api.put<Department>(`/admin/departments/${id}`, request);
   }
 
   deleteDepartment(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/admin/departments/${id}`);
+    return this.api.delete<void>(`/admin/departments/${id}`);
   }
 
   getTeams(): Observable<Team[]> {
@@ -160,10 +163,10 @@ export class UserService {
   }
 
   updateTeam(id: number, request: UpdateTeamRequest): Observable<Team> {
-    return this.api.put<Team>(`/api/admin/teams/${id}`, request);
+    return this.api.put<Team>(`/admin/teams/${id}`, request);
   }
 
   deleteTeam(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/admin/teams/${id}`);
+    return this.api.delete<void>(`/admin/teams/${id}`);
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { LeaveType } from '../models/leave-balance.model';
 import { environment } from '../../../environments/environment';
@@ -31,7 +32,8 @@ export class PolicyService {
   constructor(private api: ApiService, private http: HttpClient) {}
 
   getLeaveTypes(): Observable<LeaveType[]> {
-    return this.api.get<LeaveType[]>('/leave-types');
+    return this.api.get<{leaveTypes: LeaveType[]}>('/leave-types')
+      .pipe(map(res => res.leaveTypes));
   }
 
   createLeaveType(payload: LeaveTypePayload): Observable<LeaveType> {
@@ -39,11 +41,12 @@ export class PolicyService {
   }
 
   updateLeaveType(typeId: number, payload: LeaveTypePayload): Observable<LeaveType> {
-    return this.api.put<LeaveType>(`/api/admin/leave-types/${typeId}`, payload);
+    return this.api.put<LeaveType>(`/admin/leave-types/${typeId}`, payload);
   }
 
   getPublicHolidays(year: number): Observable<PublicHoliday[]> {
-    return this.api.get<PublicHoliday[]>('/public-holidays', { year });
+    return this.api.get<{holidays: PublicHoliday[]}>('/public-holidays', { year })
+      .pipe(map(res => res.holidays));
   }
 
   createPublicHoliday(payload: PublicHolidayPayload): Observable<PublicHoliday> {
@@ -51,7 +54,7 @@ export class PolicyService {
   }
 
   deletePublicHoliday(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/admin/public-holidays/${id}`);
+    return this.api.delete<void>(`/admin/public-holidays/${id}`);
   }
 
   importPublicHolidays(file: File): Observable<{ importedCount: number }> {
