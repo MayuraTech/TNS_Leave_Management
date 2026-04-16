@@ -94,19 +94,19 @@ export class UserService {
     if (params.departmentId !== undefined) queryParams['departmentId'] = params.departmentId;
     if (params.status) queryParams['status'] = params.status;
     if (params.search) queryParams['search'] = params.search;
-    return this.api.get<PagedResponse<User>>('/api/admin/users', queryParams);
+    return this.api.get<PagedResponse<User>>('/admin/users', queryParams);
   }
 
   createUser(request: CreateUserRequest): Observable<User> {
-    return this.api.post<User>('/api/admin/users', request);
+    return this.api.post<User>('/admin/users', request);
   }
 
   getDepartments(): Observable<Department[]> {
-    return this.api.get<Department[]>('/api/admin/departments');
+    return this.api.get<Department[]>('/admin/departments');
   }
 
   getManagers(): Observable<User[]> {
-    return this.api.get<PagedResponse<User>>('/api/admin/users', { status: 'active', role: 'MANAGER' }).pipe(
+    return this.api.get<PagedResponse<User>>('/admin/users', { status: 'active', role: 'MANAGER' }).pipe(
       map((res: PagedResponse<User>) => res.content)
     );
   }
@@ -140,7 +140,7 @@ export class UserService {
   }
 
   createDepartment(request: CreateDepartmentRequest): Observable<Department> {
-    return this.api.post<Department>('/api/admin/departments', request);
+    return this.api.post<Department>('/admin/departments', request);
   }
 
   updateDepartment(id: number, request: UpdateDepartmentRequest): Observable<Department> {
@@ -152,11 +152,11 @@ export class UserService {
   }
 
   getTeams(): Observable<Team[]> {
-    return this.api.get<Team[]>('/api/admin/teams');
+    return this.api.get<Team[]>('/admin/teams');
   }
 
   createTeam(request: CreateTeamRequest): Observable<Team> {
-    return this.api.post<Team>('/api/admin/teams', request);
+    return this.api.post<Team>('/admin/teams', request);
   }
 
   updateTeam(id: number, request: UpdateTeamRequest): Observable<Team> {
