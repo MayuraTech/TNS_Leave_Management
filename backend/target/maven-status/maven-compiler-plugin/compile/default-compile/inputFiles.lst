@@ -2,6 +2,7 @@ C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\ja
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\config\SecurityConfig.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\AuditController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\AuthenticationController.java
+C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\DashboardController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\LeaveApprovalController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\LeaveRequestController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\controller\PasswordTestController.java
@@ -20,6 +21,7 @@ C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\ja
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\dto\LoginResponse.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\dto\PendingRequestReportItem.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\dto\RefreshTokenRequest.java
+C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\dto\TeamCapacityResponse.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\dto\TokenResponse.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\entity\AuditLog.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\entity\Department.java
@@ -103,6 +105,7 @@ C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\ja
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\controller\DepartmentController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\controller\TeamController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\controller\UserManagementController.java
+C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\controller\UserProfileController.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\dto\AssignManagerRequest.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\dto\AssignUserToDepartmentRequest.java
 C:\Users\surya.prakash\Documents\GitHub\TNS_Leave_Management\backend\src\main\java\com\tns\leavemgmt\user\dto\AssignUserToTeamRequest.java

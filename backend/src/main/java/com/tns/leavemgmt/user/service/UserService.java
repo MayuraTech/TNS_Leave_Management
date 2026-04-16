@@ -81,10 +81,10 @@ public class UserService {
                 throw DuplicateUserException.forEmail(request.getEmail());
             }
 
-            // 3. Generate temporary password
-            String temporaryPassword = passwordService.generateTemporaryPassword();
+            // 3. Use default password "password123"
+            String temporaryPassword = "password123";
 
-            // 4. Hash the temporary password
+            // 4. Hash the default password
             String hashedPassword = passwordService.hashPassword(temporaryPassword);
 
             // 5. Resolve Role entities from role names
@@ -258,6 +258,19 @@ public class UserService {
 
         auditService.recordAudit("User", userId, "ACCOUNT_REACTIVATED",
                 "isActive=false", "isActive=true", performedBy);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, String newPassword, User performedBy) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> ResourceNotFoundException.forUser(userId));
+
+        user.setPasswordHash(passwordService.hashPassword(newPassword));
+        userRepository.save(user);
+        log.info("Password changed for userId={} by={}", userId, performedBy.getUsername());
+
+        auditService.recordAudit("User", userId, "PASSWORD_CHANGED",
+                null, "Password changed by admin", performedBy);
     }
 
     @Transactional

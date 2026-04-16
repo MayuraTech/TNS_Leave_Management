@@ -25,10 +25,14 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long>, JpaSp
 
     /**
      * Finds all audit logs matching the specification with performedBy User eagerly fetched.
-     * This prevents LazyInitializationException when serializing audit logs to JSON.
-     * Using standard findAll method name with EntityGraph to avoid Spring Data JPA query derivation.
-     * Also eagerly fetches the user's department to prevent nested lazy loading issues.
+     * EntityGraph explicitly loads all nested associations to prevent LazyInitializationException.
+     * Note: EntityGraph overrides EAGER defaults, so all required paths must be listed explicitly.
      */
-    @EntityGraph(attributePaths = {"performedBy", "performedBy.department"})
+    @EntityGraph(attributePaths = {
+        "performedBy",
+        "performedBy.department",
+        "performedBy.roles",
+        "performedBy.team"
+    })
     Page<AuditLog> findAll(Specification<AuditLog> spec, Pageable pageable);
 }

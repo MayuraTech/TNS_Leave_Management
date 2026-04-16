@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMINISTRATOR")
                 .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMINISTRATOR")
                 .requestMatchers("/api/leave/**").hasAnyRole("EMPLOYEE", "MANAGER", "ADMINISTRATOR")
+                .requestMatchers("/api/users/me/**").authenticated()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
@@ -82,19 +83,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
-        // Temporarily bypass password validation - accept any password
-        provider.setPasswordEncoder(new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                // Always return true to bypass password validation
-                return true;
-            }
-        });
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 

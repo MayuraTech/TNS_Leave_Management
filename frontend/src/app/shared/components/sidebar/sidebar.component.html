@@ -9,7 +9,7 @@
       *ngFor="let item of visibleItems"
       [routerLink]="item.route"
       routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? true }"
       class="nav-item"
       (click)="closeSidebar()">
       <span class="nav-icon">{{ item.icon }}</span>

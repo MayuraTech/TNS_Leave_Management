@@ -92,8 +92,8 @@ import { NotificationService } from '../../../core/services/notification.service
                 <td>{{ dept.name }}</td>
                 <td>{{ dept.description || '—' }}</td>
                 <td class="actions-cell">
-                  <button class="btn-link" (click)="startEdit(dept)">Edit</button>
-                  <button class="btn-link btn-danger" (click)="onDelete(dept)">Delete</button>
+                  <button class="btn-edit" (click)="startEdit(dept)">✏ Edit</button>
+                  <button class="btn-delete" (click)="onDelete(dept)">🗑 Delete</button>
                 </td>
               </tr>
             </ng-container>
@@ -179,10 +179,29 @@ import { NotificationService } from '../../../core/services/notification.service
     .edit-cell { padding: 1rem !important; background: #f5f3ff; }
     .inline-form .form-row { margin-bottom: 0; }
 
-    .actions-cell { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-link { background: none; border: none; padding: 0; color: #4f46e5; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
-    .btn-link:hover { text-decoration: underline; }
-    .btn-danger { color: #dc2626; }
+    .actions-cell { display: flex; gap: 0.5rem; align-items: center; }
+
+    .btn-edit {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 150ms ease;
+      background: var(--color-bg-indigo-light, #d6ddf9);
+      color: var(--color-primary-800, #3f476e);
+      border: 1px solid var(--color-bg-blue-lighter, #b3c3e6);
+      &:hover { background: var(--color-bg-blue-lighter, #b3c3e6); transform: translateY(-1px); }
+      &:active { transform: scale(0.97); }
+    }
+
+    .btn-delete {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 150ms ease;
+      background: var(--color-bg-red-light, #fee2e2);
+      color: var(--color-danger-900, #b70024);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      &:hover { background: #fecaca; border-color: rgba(220, 38, 38, 0.5); transform: translateY(-1px); }
+      &:active { transform: scale(0.97); }
+    }
 
     .empty-state { text-align: center; color: #9ca3af; padding: 2rem; }
   `]

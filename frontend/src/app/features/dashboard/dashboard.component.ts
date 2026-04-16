@@ -1,15 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/auth/auth.service';
 import { LeaveBalanceService } from '../../core/services/leave-balance.service';
+import { UserService } from '../../core/services/user.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { AuthUser } from '../../core/models/user.model';
 import { LeaveBalance } from '../../core/models/leave-balance.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   template: `
     <div class="dashboard-container">
       <div class="dashboard-header">
@@ -18,21 +23,29 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
       </div>
 
       <div class="dashboard-content">
-        <!-- User Details Card -->
+        <!-- 1. Your Profile -->
         <div class="card user-details-card">
           <div class="card-header">
             <h2>Your Profile</h2>
           </div>
           <div class="card-body">
             <div class="user-avatar">
-              <div class="avatar-circle">
-                {{ getInitials() }}
-              </div>
+              <div class="avatar-circle">{{ getInitials() }}</div>
             </div>
             <div class="user-info">
               <div class="info-row">
                 <span class="info-label">Username:</span>
-                <span class="info-value">{{ currentUser?.username }}</span>
+                <span class="info-value username-row" *ngIf="!editingUsername">
+                  {{ currentUser?.username }}
+                  <button class="edit-username-btn" (click)="startEditUsername()" title="Edit username">✏️</button>
+                </span>
+                <span class="info-value username-edit" *ngIf="editingUsername">
+                  <input type="text" [(ngModel)]="usernameInput" class="username-input"
+                    (keydown.enter)="promptConfirm()" (keydown.escape)="cancelEditUsername()"
+                    [disabled]="savingUsername" autofocus />
+                  <button class="save-username-btn" (click)="promptConfirm()" [disabled]="savingUsername">✓</button>
+                  <button class="cancel-username-btn" (click)="cancelEditUsername()" [disabled]="savingUsername">✕</button>
+                </span>
               </div>
               <div class="info-row">
                 <span class="info-label">User ID:</span>
@@ -50,7 +63,7 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
           </div>
         </div>
 
-        <!-- Leave Balances Card -->
+        <!-- 2. Leave Balances -->
         <div class="card leave-balances-card">
           <div class="card-header">
             <h2>Leave Balances</h2>
@@ -60,21 +73,12 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
               <div class="spinner"></div>
               <p>Loading leave balances...</p>
             </div>
-
             <div *ngIf="balanceError" class="error-state">
               <p>{{ balanceError }}</p>
             </div>
-
             <div *ngIf="!isLoadingBalances && !balanceError && leaveBalances.length === 0" class="empty-state">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
               <p>No leave balances found</p>
             </div>
-
             <div *ngIf="!isLoadingBalances && !balanceError && leaveBalances.length > 0" class="balances-grid">
               <div *ngFor="let balance of leaveBalances" class="balance-card">
                 <div class="balance-header">
@@ -107,6 +111,84 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
             </div>
           </div>
         </div>
+
+        <!-- 3. Team Capacity (Manager / Admin only) -->
+        <div class="card capacity-card" *ngIf="isManagerOrAdmin && capacityData">
+          <div class="card-header">
+            <h2>Team Capacity Today</h2>
+          </div>
+          <div class="card-body capacity-body">
+            <div class="donut-wrapper">
+              <svg viewBox="0 0 120 120" class="donut-svg">
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#e5e7eb" stroke-width="14"/>
+                <circle cx="60" cy="60" r="48" fill="none"
+                  stroke="#ef4444" stroke-width="14"
+                  [attr.stroke-dasharray]="onLeaveDash + ' ' + totalDash"
+                  [attr.stroke-dashoffset]="dashOffset"
+                  stroke-linecap="round"
+                  transform="rotate(-90 60 60)"/>
+                <circle cx="60" cy="60" r="48" fill="none"
+                  stroke="#4E92F8" stroke-width="14"
+                  [attr.stroke-dasharray]="availableDash + ' ' + totalDash"
+                  [attr.stroke-dashoffset]="availableOffset"
+                  stroke-linecap="round"
+                  transform="rotate(-90 60 60)"/>
+                <text x="60" y="55" text-anchor="middle" class="donut-pct">{{ capacityData.capacityPercent }}%</text>
+                <text x="60" y="70" text-anchor="middle" class="donut-label">capacity</text>
+              </svg>
+            </div>
+            <div class="capacity-legend">
+              <div class="legend-item">
+                <span class="legend-dot dot-available"></span>
+                <div class="legend-text">
+                  <span class="legend-count">{{ capacityData.available }}</span>
+                  <span class="legend-desc">Available</span>
+                </div>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot dot-leave"></span>
+                <div class="legend-text">
+                  <span class="legend-count">{{ capacityData.onLeaveToday }}</span>
+                  <span class="legend-desc">On Leave</span>
+                </div>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot dot-total"></span>
+                <div class="legend-text">
+                  <span class="legend-count">{{ capacityData.totalEmployees }}</span>
+                  <span class="legend-desc">Total</span>
+                </div>
+              </div>
+            </div>
+            <p class="capacity-caption">
+              Team is at <strong>{{ capacityData.capacityPercent }}% capacity</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div class="overlay" *ngIf="showConfirm" (click)="abortConfirm()">
+      <div class="confirm-dialog" (click)="$event.stopPropagation()">
+        <div class="confirm-icon">⚠️</div>
+        <h3 class="confirm-title">Log in again using new username</h3>
+        <p class="confirm-body">
+          Your username will be changed to <strong>{{ usernameInput }}</strong>.
+          You will be logged out and must sign in with the new username.
+        </p>
+        <div class="confirm-actions">
+          <button class="btn-abort" (click)="abortConfirm()">Abort</button>
+          <button class="btn-proceed" (click)="proceedSave()">Proceed</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" *ngIf="savingUsername">
+      <div class="loading-spinner-wrap">
+        <div class="big-spinner"></div>
+        <p class="loading-text">Updating username...</p>
       </div>
     </div>
   `,
@@ -146,6 +228,11 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
+
+    /* Left border accents per card */
+    .user-details-card  { border-left: 4px solid #4E92F8; }
+    .leave-balances-card { border-left: 4px solid #10b981; }
+    .capacity-card      { border-left: 4px solid #f59e0b; }
 
     .card-header {
       padding: 1.5rem;
@@ -211,6 +298,50 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
       font-size: 0.95rem;
       color: #1a1a2e;
       font-weight: 500;
+    }
+
+    .username-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .edit-username-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.9rem; padding: 2px 4px; border-radius: 4px;
+      opacity: 0.6; transition: opacity 150ms ease;
+      line-height: 1;
+    }
+    .edit-username-btn:hover { opacity: 1; }
+
+    .username-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .username-input {
+      padding: 4px 8px; border: 1.5px solid #4E92F8;
+      border-radius: 6px; font-size: 0.9rem; font-family: 'Outfit', sans-serif;
+      outline: none; width: 160px;
+    }
+
+    .save-username-btn, .cancel-username-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: none;
+      cursor: pointer; font-size: 0.85rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 150ms ease;
+    }
+
+    .save-username-btn {
+      background: #d1fae5; color: #065f46;
+      &:hover:not(:disabled) { background: #a7f3d0; }
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+
+    .cancel-username-btn {
+      background: #fee2e2; color: #b91c1c;
+      &:hover:not(:disabled) { background: #fecaca; }
     }
 
     .roles-container {
@@ -291,8 +422,16 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
 
     .balances-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 900px) {
+      .balances-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .balances-grid { grid-template-columns: 1fr; }
     }
 
     .balance-card {
@@ -410,6 +549,168 @@ import { LeaveBalance } from '../../core/models/leave-balance.model';
         grid-template-columns: 1fr;
       }
     }
+
+    /* ---- Team Capacity Card ---- */
+    .capacity-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+    }
+
+    .donut-wrapper {
+      width: 160px;
+      height: 160px;
+    }
+
+    .donut-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .donut-pct {
+      font-size: 22px;
+      font-weight: 700;
+      fill: #1a1a2e;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .donut-label {
+      font-size: 10px;
+      fill: #6b7280;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .capacity-legend {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-available { background: #4E92F8; }
+    .dot-leave     { background: #ef4444; }
+    .dot-total     { background: #e5e7eb; border: 1px solid #d1d5db; }
+
+    .legend-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .legend-count {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1.2;
+    }
+
+    .legend-desc {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .capacity-caption {
+      font-size: 0.9rem;
+      color: #374151;
+      margin: 0;
+      text-align: center;
+    }
+
+    .capacity-caption strong {
+      color: #4E92F8;
+    }
+
+    /* ---- Confirmation Dialog ---- */
+    .overlay {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(10, 18, 40, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 150ms ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .confirm-dialog {
+      background: #fff; border-radius: 16px;
+      padding: 2rem; max-width: 420px; width: calc(100vw - 2rem);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: slideUp 200ms cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .confirm-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    .confirm-title {
+      font-size: 1.1rem; font-weight: 700; color: #1a1a2e;
+      margin: 0 0 0.75rem;
+    }
+
+    .confirm-body {
+      font-size: 0.9rem; color: #6b7280; margin: 0 0 1.5rem;
+      line-height: 1.6;
+      strong { color: #1a1a2e; }
+    }
+
+    .confirm-actions {
+      display: flex; gap: 0.75rem; justify-content: center;
+    }
+
+    .btn-abort {
+      padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem;
+      font-weight: 600; cursor: pointer; transition: all 150ms ease;
+      background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;
+      &:hover { background: #e5e7eb; }
+    }
+
+    .btn-proceed {
+      padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem;
+      font-weight: 600; cursor: pointer; transition: all 150ms ease;
+      background: #4E92F8; color: #fff; border: none;
+      &:hover { background: #3498db; transform: translateY(-1px); }
+      &:active { transform: scale(0.97); }
+    }
+
+    /* ---- Loading Overlay ---- */
+    .loading-overlay {
+      position: fixed; inset: 0; z-index: 4000;
+      background: rgba(10, 18, 40, 0.65);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .loading-spinner-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+
+    .big-spinner {
+      width: 56px; height: 56px;
+      border: 5px solid rgba(255,255,255,0.2);
+      border-top-color: #4E92F8;
+      border-radius: 50%;
+      animation: spin 700ms linear infinite;
+    }
+
+    .loading-text {
+      color: #fff; font-size: 0.95rem; font-weight: 500; margin: 0;
+    }
   `]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -417,18 +718,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
   leaveBalances: LeaveBalance[] = [];
   isLoadingBalances = false;
   balanceError = '';
+
+  // Team capacity
+  capacityData: { totalEmployees: number; onLeaveToday: number; available: number; capacityPercent: number } | null = null;
+
+  // Username editing
+  editingUsername = false;
+  usernameInput = '';
+  savingUsername = false;
+  showConfirm = false;
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
-    private leaveBalanceService: LeaveBalanceService
+    private leaveBalanceService: LeaveBalanceService,
+    private http: HttpClient,
+    private userService: UserService,
+    private notificationService: NotificationService
   ) {}
+
+  get isManagerOrAdmin(): boolean {
+    const roles = this.currentUser?.roles ?? [];
+    return roles.includes('MANAGER') || roles.includes('ADMINISTRATOR');
+  }
+
+  // SVG donut math
+  get circumference(): number { return 2 * Math.PI * 48; }
+  get totalDash(): number { return this.circumference; }
+  get onLeaveDash(): number {
+    if (!this.capacityData || this.capacityData.totalEmployees === 0) return 0;
+    return (this.capacityData.onLeaveToday / this.capacityData.totalEmployees) * this.circumference;
+  }
+  get availableDash(): number {
+    if (!this.capacityData || this.capacityData.totalEmployees === 0) return this.circumference;
+    return (this.capacityData.available / this.capacityData.totalEmployees) * this.circumference;
+  }
+  // on-leave arc starts at 0 (top after rotate -90)
+  get dashOffset(): number { return 0; }
+  // available arc starts after on-leave arc
+  get availableOffset(): number { return -this.onLeaveDash; }
 
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.currentUser = user;
+        if (this.isManagerOrAdmin) {
+          this.loadTeamCapacity();
+        }
       });
 
     this.loadLeaveBalances();
@@ -437,6 +775,58 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  startEditUsername(): void {
+    this.usernameInput = this.currentUser?.username ?? '';
+    this.editingUsername = true;
+  }
+
+  cancelEditUsername(): void {
+    this.editingUsername = false;
+    this.usernameInput = '';
+    this.showConfirm = false;
+  }
+
+  promptConfirm(): void {
+    const trimmed = this.usernameInput.trim();
+    if (!trimmed || trimmed.length < 3) return;
+    if (trimmed === this.currentUser?.username) {
+      this.cancelEditUsername();
+      return;
+    }
+    this.showConfirm = true;
+  }
+
+  abortConfirm(): void {
+    this.showConfirm = false;
+    // Keep editing mode open so user can change the input
+  }
+
+  proceedSave(): void {
+    this.showConfirm = false;
+    this.savingUsername = true;
+    this.userService.updateMyUsername(this.usernameInput.trim())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          // Username changed — log out
+          this.authService.logout();
+        },
+        error: (err) => {
+          this.savingUsername = false;
+          this.notificationService.error(err?.error?.message ?? 'Failed to update username.');
+        }
+      });
+  }
+
+  loadTeamCapacity(): void {
+    this.http.get<{ totalEmployees: number; onLeaveToday: number; available: number; capacityPercent: number }>(
+      `${environment.apiUrl}/dashboard/team-capacity`
+    ).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => { this.capacityData = data; },
+      error: () => { /* non-critical, silently fail */ }
+    });
   }
 
   loadLeaveBalances(): void {
@@ -450,7 +840,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.leaveBalances = balances;
           this.isLoadingBalances = false;
         },
-        error: (err: any) => {
+        error: () => {
           this.balanceError = 'Failed to load leave balances. Please try again later.';
           this.isLoadingBalances = false;
         }
@@ -459,14 +849,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getInitials(): string {
     if (!this.currentUser) return '';
-    const username = this.currentUser.username || '';
-    return username.substring(0, 2).toUpperCase();
+    return (this.currentUser.username || '').substring(0, 2).toUpperCase();
   }
 
   getUsagePercentage(balance: LeaveBalance): number {
     const total = (balance.accruedDays || 0) + (balance.availableDays || 0);
     if (total === 0) return 0;
-    const used = balance.usedDays || 0;
-    return Math.round((used / total) * 100);
+    return Math.round(((balance.usedDays || 0) / total) * 100);
   }
 }

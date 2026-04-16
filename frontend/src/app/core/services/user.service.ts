@@ -123,7 +123,7 @@ export class UserService {
   }
 
   resetPassword(id: number, request: ResetPasswordRequest): Observable<void> {
-    return this.api.post<void>(`/admin/users/${id}/reset-password`, request);
+    return this.api.put<void>(`/admin/users/${id}/change-password`, request);
   }
 
   setUserStatus(id: number, active: boolean): Observable<User> {
@@ -168,5 +168,9 @@ export class UserService {
 
   deleteTeam(id: number): Observable<void> {
     return this.api.delete<void>(`/admin/teams/${id}`);
+  }
+
+  updateMyUsername(username: string): Observable<User> {
+    return this.api.patch<User>('/users/me/username', { username });
   }
 }

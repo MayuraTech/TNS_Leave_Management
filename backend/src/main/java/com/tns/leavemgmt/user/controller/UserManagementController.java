@@ -157,6 +157,21 @@ public class UserManagementController {
         return ResponseEntity.ok(Map.of("message", "Password reset successfully. New temporary password sent to user."));
     }
 
+    /** PUT /api/admin/users/{userId}/change-password — Admin sets a new password for a user */
+    @PutMapping("/{userId}/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(
+            @PathVariable Long userId,
+            @RequestBody Map<String, String> request,
+            @AuthenticationPrincipal UserDetails principal) {
+        String newPassword = request.get("newPassword");
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("newPassword is required");
+        }
+        User admin = resolveUser(principal);
+        userService.changePassword(userId, newPassword, admin);
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully."));
+    }
+
     /** PUT /api/admin/users/{userId}/manager — Assign manager to user (Req 5.1) */
     @PutMapping("/{userId}/manager")
     public ResponseEntity<Map<String, String>> assignManager(

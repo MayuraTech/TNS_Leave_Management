@@ -10,6 +10,7 @@ interface NavItem {
   route: string;
   icon: string;
   roles?: ('EMPLOYEE' | 'MANAGER' | 'ADMINISTRATOR')[];
+  exact?: boolean;
 }
 
 @Component({
@@ -24,17 +25,17 @@ export class SidebarComponent implements OnInit {
   currentUser: AuthUser | null = null;
 
   navItems: NavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: '🏠' },
-    { label: 'My Leave', route: '/leave', icon: '📋' },
-    { label: 'Apply Leave', route: '/leave/new', icon: '➕' },
-    { label: 'Approvals', route: '/approval', icon: '✅', roles: ['MANAGER', 'ADMINISTRATOR'] },
-    { label: 'Users', route: '/admin/users', icon: '👥', roles: ['ADMINISTRATOR'] },
-    { label: 'Departments', route: '/admin/users/departments', icon: '🏢', roles: ['ADMINISTRATOR'] },
-    { label: 'Teams', route: '/admin/users/teams', icon: '👨‍👩‍👧‍👦', roles: ['ADMINISTRATOR'] },
-    { label: 'Leave Policy', route: '/admin/policy', icon: '📜', roles: ['ADMINISTRATOR'] },
-    { label: 'Holidays', route: '/admin/policy/holidays', icon: '🗓️', roles: ['ADMINISTRATOR'] },
-    { label: 'Reports', route: '/admin/reports', icon: '📊', roles: ['ADMINISTRATOR'] },
-    { label: 'Audit Trail', route: '/admin/reports/audit', icon: '🔍', roles: ['ADMINISTRATOR'] }
+    { label: 'Dashboard',    route: '/dashboard',              icon: '🏠',          exact: true },
+    { label: 'My Leave',     route: '/leave',                  icon: '📋',          exact: true },
+    { label: 'Apply Leave',  route: '/leave/new',              icon: '➕',          exact: true },
+    { label: 'Approvals',    route: '/approval',               icon: '✅',          exact: false, roles: ['MANAGER', 'ADMINISTRATOR'] },
+    { label: 'Users',        route: '/admin/users',            icon: '👥',          exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Departments',  route: '/admin/users/departments',icon: '🏢',          exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Teams',        route: '/admin/users/teams',      icon: '👨‍👩‍👧‍👦',  exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Leave Policy', route: '/admin/policy',           icon: '📜',          exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Holidays',     route: '/admin/policy/holidays',  icon: '🗓️',         exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Reports',      route: '/admin/reports',          icon: '📊',          exact: true,  roles: ['ADMINISTRATOR'] },
+    { label: 'Audit Trail',  route: '/admin/reports/audit',    icon: '🪲',          exact: true,  roles: ['ADMINISTRATOR'] }
   ];
 
   visibleItems: NavItem[] = [];

@@ -4,14 +4,32 @@
   left: 0;
   right: 0;
   height: 64px;
-  background: #3f476e;
+  background: linear-gradient(90deg, #29196f 0%, #3f476e 100%);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   z-index: 1100;
-  box-shadow: 0 2px 8px rgba(63, 71, 110, 0.15);
+  box-shadow: 0 2px 16px rgba(41, 25, 111, 0.25);
+
+  // Subtle bottom accent line
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4E92F8, #62C3FA, #4E92F8);
+    background-size: 200% 100%;
+    animation: shimmerLine 3s linear infinite;
+  }
+}
+
+@keyframes shimmerLine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 // Burger Menu Button
@@ -26,36 +44,32 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 0;
-  transition: all 0.3s ease;
+  transition: background 200ms ease;
   flex-shrink: 0;
 
   span {
     display: block;
-    width: 24px;
-    height: 3px;
-    background: #4E92F8;
+    height: 2px;
+    background: #b3d9ff;
     border-radius: 2px;
-    transition: all 0.3s ease;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:nth-child(1) { width: 22px; }
+    &:nth-child(2) { width: 16px; }
+    &:nth-child(3) { width: 22px; }
   }
 
   &:hover {
-    background: rgba(78, 146, 248, 0.1);
+    background: rgba(78, 146, 248, 0.15);
+    span { background: #4E92F8; &:nth-child(2) { width: 22px; } }
   }
 
   &.open {
-    span:nth-child(1) {
-      transform: rotate(45deg) translate(7px, 7px);
-    }
-
-    span:nth-child(2) {
-      opacity: 0;
-    }
-
-    span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
-    }
+    span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); width: 22px; background: #4E92F8; }
+    span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); width: 22px; background: #4E92F8; }
   }
 }
 
@@ -64,18 +78,20 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  
+
   h1 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #ffffff;
-    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.01em;
     white-space: nowrap;
 
-    @media (max-width: 767px) {
-      font-size: 1rem;
+    span {
+      color: #4E92F8;
     }
+
+    @media (max-width: 767px) { font-size: 1rem; }
   }
 }
 
@@ -83,34 +99,38 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-shrink: 0;
-  margin-left: auto; // Push to the right
+  margin-left: auto;
 }
 
 // User Info
 .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
-  @media (max-width: 767px) {
-    display: none; // Hide on mobile to save space
-  }
+  @media (max-width: 767px) { display: none; }
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, #4E92F8, #62C3FA);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #ffffff;
   flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(78, 146, 248, 0.3);
+  transition: box-shadow 200ms ease;
+
+  &:hover {
+    box-shadow: 0 0 0 3px rgba(78, 146, 248, 0.5);
+  }
 }
 
 .user-details {
@@ -120,48 +140,52 @@
 }
 
 .user-name {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .user-role {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #b3d9ff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 // Logout Button
 .btn-logout {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(251, 52, 52, 0.08);
+  border: 1px solid rgba(251, 52, 52, 0.25);
   border-radius: 8px;
-  color: #fb3434;
-  font-size: 0.875rem;
+  color: #ffffff;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 200ms ease;
   white-space: nowrap;
+  letter-spacing: 0.02em;
 
   &:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #ef4444;
+    background: rgba(251, 52, 52, 0.18);
+    border-color: rgba(251, 52, 52, 0.5);
+    color: #ffffff;
+    transform: translateY(-1px);
   }
 
-  .logout-icon {
-    font-size: 1.125rem;
-  }
+  &:active { transform: scale(0.97); }
+
+  .logout-icon { font-size: 1rem; font-style: normal; }
 
   .logout-text {
-    @media (max-width: 767px) {
-      display: none; // Show only icon on mobile
-    }
+    @media (max-width: 767px) { display: none; }
   }
 }

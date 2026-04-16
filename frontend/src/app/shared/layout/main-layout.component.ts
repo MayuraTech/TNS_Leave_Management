@@ -23,7 +23,7 @@ import { SidebarComponent } from '../components/sidebar/sidebar.component';
     }
 
     .layout-sidebar {
-      width: 240px;
+      width: 0;
       flex-shrink: 0;
       position: sticky;
       top: 0;
