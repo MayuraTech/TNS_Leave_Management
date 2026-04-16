@@ -8,7 +8,7 @@ import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
-import com.tns.leavemgmt.repository.UserRepository;
+import com.tns.leavemgmt.user.repository.UserRepository;
 import com.tns.leavemgmt.service.LeaveApprovalService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

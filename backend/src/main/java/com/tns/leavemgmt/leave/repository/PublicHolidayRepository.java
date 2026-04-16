@@ -16,4 +16,6 @@ public interface PublicHolidayRepository extends JpaRepository<PublicHoliday, Lo
     boolean existsByHolidayDate(LocalDate holidayDate);
 
     List<PublicHoliday> findByHolidayDateBetweenOrderByHolidayDateAsc(LocalDate start, LocalDate end);
+
+    List<PublicHoliday> findByHolidayDateBetween(LocalDate start, LocalDate end);
 }

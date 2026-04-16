@@ -1,7 +1,7 @@
 package com.tns.leavemgmt.service;
 
 import com.tns.leavemgmt.entity.User;
-import com.tns.leavemgmt.repository.UserRepository;
+import com.tns.leavemgmt.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

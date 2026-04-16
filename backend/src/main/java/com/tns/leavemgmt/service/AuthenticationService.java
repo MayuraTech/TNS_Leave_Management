@@ -1,7 +1,7 @@
 package com.tns.leavemgmt.service;
 
 import com.tns.leavemgmt.entity.User;
-import com.tns.leavemgmt.repository.UserRepository;
+import com.tns.leavemgmt.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

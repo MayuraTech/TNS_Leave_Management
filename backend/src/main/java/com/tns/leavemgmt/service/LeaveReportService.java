@@ -8,7 +8,7 @@ import com.tns.leavemgmt.entity.LeaveBalance;
 import com.tns.leavemgmt.entity.LeaveRequest;
 import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.entity.User;
-import com.tns.leavemgmt.repository.LeaveBalanceRepository;
+import com.tns.leavemgmt.leave.repository.LeaveBalanceRepository;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

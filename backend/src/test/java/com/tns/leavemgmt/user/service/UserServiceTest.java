@@ -1,6 +1,6 @@
 package com.tns.leavemgmt.user.service;
 
-import com.tns.leavemgmt.audit.service.AuditService;
+import com.tns.leavemgmt.service.AuditService;
 import com.tns.leavemgmt.exception.DuplicateUserException;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.notification.NotificationService;

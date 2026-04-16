@@ -4,7 +4,7 @@ import com.tns.leavemgmt.dto.CalendarEntryResponse;
 import com.tns.leavemgmt.entity.LeaveRequest;
 import com.tns.leavemgmt.entity.PublicHoliday;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
-import com.tns.leavemgmt.repository.PublicHolidayRepository;
+import com.tns.leavemgmt.leave.repository.PublicHolidayRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

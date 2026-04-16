@@ -323,7 +323,7 @@ Incremental implementation of the Leave Management System using Spring Boot (Jav
     - Ensure `AuditEventListener` captures all required events: user CRUD, leave request lifecycle, balance adjustments
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
 
-- [ ] 23. Final checkpoint — Ensure all tests pass
+- [x] 23. Final checkpoint — Ensure all tests pass
   - Run all backend unit and integration tests. Run all Angular component tests. Verify end-to-end flows for the three roles (Employee, Manager, Administrator). Ask the user if questions arise.
 
 ## Notes

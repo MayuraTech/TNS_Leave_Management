@@ -11,7 +11,8 @@ import com.tns.leavemgmt.exception.InsufficientLeaveBalanceException;
 import com.tns.leavemgmt.exception.OverlappingLeaveRequestException;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
-import com.tns.leavemgmt.repository.LeaveTypeRepository;
+import com.tns.leavemgmt.leave.repository.LeaveTypeRepository;
+import com.tns.leavemgmt.user.service.ManagerRelationshipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -95,7 +96,8 @@ public class LeaveRequestService {
         //         if violated, throw new PolicyViolationException("Request violates minimum notice period of X days");
 
         // Step 6: Assign manager (Req 7.8)
-        Optional<User> manager = managerRelationshipService.findManagerForEmployee(employee);
+        Optional<ManagerEmployee> managerRelationship = managerRelationshipService.getManagerForEmployee(employee.getId());
+        Optional<User> manager = managerRelationship.map(ManagerEmployee::getManager);
         if (manager.isEmpty()) {
             log.warn("No manager found for employee id={}. Request will be submitted without manager assignment.",
                     employee.getId());
