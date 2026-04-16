@@ -13,6 +13,8 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
+    loadComponent: () =>
+      import('./shared/layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       // Leave requests (all authenticated users)
       {

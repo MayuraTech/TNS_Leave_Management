@@ -26,7 +26,16 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.api.post<LoginResponse>('/auth/login', credentials).pipe(
       tap(res => {
-        const authUser: AuthUser = { ...res.user, token: res.token, expiresIn: res.expiresIn };
+        // Strip 'ROLE_' prefix from roles if present
+        const roles = res.user.roles.map(role => 
+          role.startsWith('ROLE_') ? role.substring(5) as UserRole : role
+        );
+        const authUser: AuthUser = { 
+          ...res.user, 
+          roles,
+          token: res.token, 
+          expiresIn: res.expiresIn 
+        };
         sessionStorage.setItem(this.TOKEN_KEY, JSON.stringify(authUser));
         this.currentUserSubject.next(authUser);
       })
