@@ -7,7 +7,8 @@ import com.tns.leavemgmt.entity.enums.LeaveRequestStatus;
 import com.tns.leavemgmt.exception.InsufficientLeaveBalanceException;
 import com.tns.leavemgmt.exception.OverlappingLeaveRequestException;
 import com.tns.leavemgmt.repository.LeaveRequestRepository;
-import com.tns.leavemgmt.repository.LeaveTypeRepository;
+import com.tns.leavemgmt.leave.repository.LeaveTypeRepository;
+import com.tns.leavemgmt.user.service.ManagerRelationshipService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -102,7 +103,7 @@ class LeaveRequestServiceTest {
                 .thenReturn(new BigDecimal("10"));
         when(leaveRequestRepository.findOverlappingRequests(employee.getId(), start, end))
                 .thenReturn(Collections.emptyList());
-        when(managerRelationshipService.findManagerForEmployee(employee))
+        when(managerRelationshipService.getManagerForEmployee(employee.getId()))
                 .thenReturn(Optional.empty());
         when(leaveRequestRepository.save(any(LeaveRequest.class)))
                 .thenAnswer(inv -> inv.getArgument(0));

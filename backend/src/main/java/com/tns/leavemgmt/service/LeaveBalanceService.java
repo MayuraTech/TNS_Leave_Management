@@ -7,10 +7,10 @@ import com.tns.leavemgmt.entity.LeaveType;
 import com.tns.leavemgmt.entity.User;
 import com.tns.leavemgmt.exception.InsufficientLeaveBalanceException;
 import com.tns.leavemgmt.exception.ResourceNotFoundException;
-import com.tns.leavemgmt.repository.LeaveAccrualTransactionRepository;
-import com.tns.leavemgmt.repository.LeaveBalanceRepository;
-import com.tns.leavemgmt.repository.LeaveTypeRepository;
-import com.tns.leavemgmt.repository.UserRepository;
+import com.tns.leavemgmt.leave.repository.LeaveAccrualTransactionRepository;
+import com.tns.leavemgmt.leave.repository.LeaveBalanceRepository;
+import com.tns.leavemgmt.leave.repository.LeaveTypeRepository;
+import com.tns.leavemgmt.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

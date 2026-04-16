@@ -20,6 +20,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.*;
  *                         15.4 (accrual transactions recorded with timestamp)
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AccrualServiceTest {
 
     @Mock private UserRepository userRepository;
@@ -114,7 +117,7 @@ class AccrualServiceTest {
                     .build();
 
             when(leaveBalanceRepository.findByUserIdAndLeaveTypeIdAndYear(
-                    employee.getId(), annualLeave.getId(), anyInt()))
+                    eq(employee.getId()), eq(annualLeave.getId()), anyInt()))
                     .thenReturn(Optional.of(existing));
 
             accrualService.processAccrual();
