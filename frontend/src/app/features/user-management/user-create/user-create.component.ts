@@ -65,6 +65,22 @@ const ALL_ROLES: UserRole[] = ['EMPLOYEE', 'MANAGER', 'ADMINISTRATOR'];
                 <span *ngIf="isInvalid('lastName')" class="field-error">Last name is required.</span>
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" type="text" formControlName="phone" placeholder="Optional" />
+              </div>
+              <div class="form-group">
+                <label for="emergencyContact">Emergency Contact</label>
+                <input id="emergencyContact" type="text" formControlName="emergencyContact" placeholder="Optional" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="address">Address</label>
+                <input id="address" type="text" formControlName="address" placeholder="Optional" />
+              </div>
+            </div>
           </fieldset>
 
           <!-- Roles -->
@@ -219,6 +235,9 @@ export class UserCreateComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      phone: [''],
+      emergencyContact: [''],
+      address: [''],
       departmentId: [''],
       managerId: ['']
     });
@@ -270,13 +289,16 @@ export class UserCreateComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { username, email, firstName, lastName, departmentId, managerId } = this.createForm.value;
+    const { username, email, firstName, lastName, phone, emergencyContact, address, departmentId, managerId } = this.createForm.value;
 
     this.userService.createUser({
       username,
       email,
       firstName,
       lastName,
+      phone: phone || undefined,
+      emergencyContact: emergencyContact || undefined,
+      address: address || undefined,
       roles: this.selectedRoles,
       departmentId: departmentId ? Number(departmentId) : undefined,
       managerId: managerId ? Number(managerId) : undefined

@@ -16,7 +16,10 @@
         "@modelcontextprotocol/server-postgres",
         "postgresql://Saravanan:@dmin@123@10.0.2.134:5432/Interns Training Database"
       ],
-      "disabled": false
+      "disabled": false,
+      "autoApprove": [
+        "query"
+      ]
     },
     "playwright": {
       "command": "npx",

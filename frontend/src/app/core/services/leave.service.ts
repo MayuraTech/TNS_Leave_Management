@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { LeaveBalance, LeaveType } from '../models/leave-balance.model';
 import { LeaveRequest, LeaveRequestDTO, LeaveRequestStatus } from '../models/leave-request.model';
@@ -10,7 +11,8 @@ export class LeaveService {
   constructor(private api: ApiService) {}
 
   getLeaveTypes(): Observable<LeaveType[]> {
-    return this.api.get<LeaveType[]>('/leave-types');
+    return this.api.get<{leaveTypes: LeaveType[]}>('/leave-types')
+      .pipe(map(res => res.leaveTypes));
   }
 
   getLeaveBalances(): Observable<LeaveBalance[]> {
@@ -28,11 +30,11 @@ export class LeaveService {
   }
 
   getLeaveRequest(id: number): Observable<LeaveRequest> {
-    return this.api.get<LeaveRequest>(`/api/leave/requests/${id}`);
+    return this.api.get<LeaveRequest>(`/leave/requests/${id}`);
   }
 
   cancelLeaveRequest(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/leave/requests/${id}`);
+    return this.api.delete<void>(`/leave/requests/${id}`);
   }
 
   // Manager endpoints
@@ -41,11 +43,11 @@ export class LeaveService {
   }
 
   approveLeaveRequest(id: number, comments: string): Observable<LeaveRequest> {
-    return this.api.put<LeaveRequest>(`/api/leave/requests/${id}/approve`, { comments });
+    return this.api.put<LeaveRequest>(`/leave/requests/${id}/approve`, { comments });
   }
 
   denyLeaveRequest(id: number, reason: string): Observable<LeaveRequest> {
-    return this.api.put<LeaveRequest>(`/api/leave/requests/${id}/deny`, { reason });
+    return this.api.put<LeaveRequest>(`/leave/requests/${id}/deny`, { reason });
   }
 
   // Calendar endpoints
@@ -65,6 +67,7 @@ export class LeaveService {
   }
 
   getPublicHolidays(year: number): Observable<PublicHoliday[]> {
-    return this.api.get<PublicHoliday[]>('/public-holidays', { year });
+    return this.api.get<{holidays: PublicHoliday[]}>('/public-holidays', { year })
+      .pipe(map(res => res.holidays));
   }
 }

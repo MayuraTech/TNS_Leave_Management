@@ -51,13 +51,35 @@ public class UserManagementController {
 
     /** GET /api/admin/users — List users with optional filters (Req 1.1) */
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsers(
+    public ResponseEntity<Map<String, Object>> getUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Long departmentId,
-            @RequestParam(required = false) Boolean status) {
-        List<UserResponse> users = userService.getUsers(page, size, departmentId, status);
-        return ResponseEntity.ok(users);
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String role) {
+        
+        // Convert status string to Boolean
+        Boolean active = null;
+        if (status != null) {
+            if ("active".equalsIgnoreCase(status)) {
+                active = true;
+            } else if ("inactive".equalsIgnoreCase(status)) {
+                active = false;
+            }
+        }
+        
+        List<UserResponse> users = userService.getUsers(page, size, departmentId, active, role);
+        
+        // Create paginated response
+        Map<String, Object> response = Map.of(
+            "content", users,
+            "totalElements", users.size(),
+            "totalPages", users.isEmpty() ? 0 : 1,
+            "number", page,
+            "size", size
+        );
+        
+        return ResponseEntity.ok(response);
     }
 
     /** PUT /api/admin/users/{userId} — Update user profile (Req 2.1) */
