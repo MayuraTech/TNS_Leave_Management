@@ -1,0 +1,459 @@
+openapi: 3.0.3
+info:
+  title: Leave Management System API
+  description: |
+    RESTful API for the Leave Management System - A comprehensive solution for managing employee leave requests, 
+    approvals, balances, and organizational policies.
+    
+    ## Authentication
+    All endpoints (except `/api/auth/login`) require JWT authentication. Include the JWT token in the Authorization header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+    
+    ## Roles
+    - **EMPLOYEE**: Can submit leave requests, view own balances and requests
+    - **MANAGER**: Can approve/deny leave requests from team members, view team calendar
+    - **ADMINISTRATOR**: Full system access including user management, reporting, and policy configuration
+    
+  version: 1.0.0
+  contact:
+    name: TNS Leave Management Team
+    email: support@tnsleave.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.tnsleave.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and token management
+  - name: Leave Requests
+    description: Employee leave request operations
+  - name: Leave Approval
+    description: Manager leave approval operations
+  - name: Leave Balance
+    description: Leave balance and accrual operations
+  - name: Leave Calendar
+    description: Team leave calendar operations
+  - name: User Management
+    description: Admin user account management
+  - name: Department Management
+    description: Admin department operations
+  - name: Team Management
+    description: Admin team operations
+  - name: Leave Policy
+    description: Leave type and policy configuration
+  - name: Public Holidays
+    description: Public holiday management
+  - name: Reporting
+    description: Admin reporting and analytics
+  - name: Audit
+    description: Audit log operations
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ============================================================================
+  # AUTHENTICATION ENDPOINTS
+  # ============================================================================
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user with username/email and password, returns JWT token
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials or account locked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Logout user (client-side token removal)
+      operationId: logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+
+  /api/auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh JWT token
+      description: Get a new JWT token using existing valid token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ============================================================================
+  # LEAVE REQUEST ENDPOINTS
+  # ============================================================================
+  /api/leave/requests:
+    post:
+      tags:
+        - Leave Requests
+      summary: Submit a new leave request
+      description: Employee submits a new leave request
+      operationId: submitLeaveRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveRequestDTO'
+      responses:
+        '201':
+          description: Leave request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequestResponse'
+        '400':
+          description: Validation error or business rule violation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Leave Requests
+      summary: Get employee's leave requests
+      description: List authenticated employee's own leave requests with optional status filter
+      operationId: getMyRequests
+      parameters:
+        - name: status
+          in: query
+          description: Filter by leave request status
+          required: false
+          schema:
+            $ref: '#/components/schemas/LeaveRequestStatus'
+      responses:
+        '200':
+          description: List of leave requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaveRequestResponse'
+
+  /api/leave/requests/{id}:
+    get:
+      tags:
+        - Leave Requests
+      summary: Get leave request by ID
+      description: Get details of a specific leave request (employee can only view own requests)
+      operationId: getRequestById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Leave request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequestResponse'
+        '404':
+          description: Leave request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Leave Requests
+      summary: Cancel a leave request
+      description: Employee cancels their own leave request
+      operationId: cancelRequest
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Leave request cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequestResponse'
+        '400':
+          description: Cannot cancel request (e.g., already processed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/leave/requests/{id}/approve:
+    put:
+      tags:
+        - Leave Approval
+      summary: Approve a leave request
+      description: Manager approves a leave request from their team
+      operationId: approveRequest
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveLeaveRequest'
+      responses:
+        '200':
+          description: Leave request approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequestResponse'
+        '403':
+          description: Not authorized to approve this request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/leave/requests/{id}/deny:
+    put:
+      tags:
+        - Leave Approval
+      summary: Deny a leave request
+      description: Manager denies a leave request from their team
+      operationId: denyRequest
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DenyLeaveRequest'
+      responses:
+        '200':
+          description: Leave request denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequestResponse'
+        '403':
+          description: Not authorized to deny this request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/manager/pending-requests:
+    get:
+      tags:
+        - Leave Approval
+      summary: Get pending leave requests
+      description: Get all pending leave requests from manager's direct reports
+      operationId: getPendingRequests
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of pending leave requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaveRequestResponse'
+
+  # ============================================================================
+  # LEAVE BALANCE ENDPOINTS
+  # ============================================================================
+  /api/leave/balance:
+    get:
+      tags:
+        - Leave Balance
+      summary: Get employee's leave balances
+      description: Get all leave balances with accrual rates for authenticated user
+      operationId: getMyBalances
+      responses:
+        '200':
+          description: List of leave balances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaveBalanceResponse'
+
+  /api/admin/leave-balance/adjust:
+    post:
+      tags:
+        - Leave Balance
+      summary: Adjust employee leave balance
+      description: Admin manually adjusts an employee's leave balance
+      operationId: adjustBalance
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdjustBalanceRequest'
+      responses:
+        '200':
+          description: Balance adjusted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newBalance:
+                    type: number
+                    format: double
+
+  /api/admin/accrual/process:
+    post:
+      tags:
+        - Leave Balance
+      summary: Process leave accrual
+      description: Manually trigger leave accrual processing for all active employees
+      operationId: processAccrual
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Accrual processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processedCount:
+                    type: integer
+
+  # ============================================================================
+  # LEAVE CALENDAR ENDPOINTS
+  # ============================================================================
+  /api/leave/calendar:
+    get:
+      tags:
+        - Leave Calendar
+      summary: Get team leave calendar
+      description: Get leave calendar for a team within a date range, includes approved leaves and public holidays
+      operationId: getCalendar
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: teamId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: leaveTypeId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Calendar entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarEntryResponse'
+
+  # ============================================================================
+  # USER MANAGEMENT ENDPOINTS
+  # ============================================================================
