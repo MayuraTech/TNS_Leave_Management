@@ -35,14 +35,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                 .collect(Collectors.toSet());
 
-        // Passing isActive as the 'enabled' flag — deactivated users cannot authenticate (Req 6.2)
-        return new org.springframework.security.core.userdetails.User(
+        // Return CustomUserDetails with user ID
+        return new CustomUserDetails(
+                user.getId(),
                 user.getUsername(),
                 user.getPasswordHash(),
-                user.getIsActive(),   // enabled
-                true,                 // accountNonExpired
-                true,                 // credentialsNonExpired
-                true,                 // accountNonLocked
+                user.getIsActive(),
                 authorities
         );
     }

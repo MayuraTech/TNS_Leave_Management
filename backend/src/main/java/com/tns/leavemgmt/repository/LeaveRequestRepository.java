@@ -28,7 +28,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
      */
     @Query("SELECT lr FROM LeaveRequest lr " +
            "WHERE lr.employee.team.id = :teamId " +
-           "AND lr.status = com.tns.leavemgmt.entity.LeaveRequestStatus.APPROVED " +
+           "AND lr.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.APPROVED " +
            "AND lr.startDate <= :endDate AND lr.endDate >= :startDate " +
            "AND (:leaveTypeId IS NULL OR lr.leaveType.id = :leaveTypeId)")
     List<LeaveRequest> findApprovedByTeamAndDateRange(@Param("teamId") Long teamId,
@@ -41,7 +41,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
      * Requirements: 13.1
      */
     @Query("SELECT lr FROM LeaveRequest lr " +
-           "WHERE lr.status = com.tns.leavemgmt.entity.LeaveRequestStatus.APPROVED " +
+           "WHERE lr.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.APPROVED " +
            "AND lr.startDate <= :endDate AND lr.endDate >= :startDate " +
            "AND (:departmentId IS NULL OR lr.employee.department.id = :departmentId) " +
            "AND (:leaveTypeId IS NULL OR lr.leaveType.id = :leaveTypeId)")
@@ -55,7 +55,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
      * Requirements: 13.5
      */
     @Query("SELECT lr FROM LeaveRequest lr " +
-           "WHERE lr.status = com.tns.leavemgmt.entity.LeaveRequestStatus.APPROVED " +
+           "WHERE lr.status = com.tns.leavemgmt.entity.enums.LeaveRequestStatus.APPROVED " +
            "AND lr.startDate <= :endDate AND lr.endDate >= :startDate")
     List<LeaveRequest> findApprovedByDateRange(@Param("startDate") LocalDate startDate,
                                                @Param("endDate") LocalDate endDate);
