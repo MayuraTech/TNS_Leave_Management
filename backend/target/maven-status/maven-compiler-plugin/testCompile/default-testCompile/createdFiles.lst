@@ -1,3 +1,4 @@
+com\tns\leavemgmt\PasswordHashGenerator.class
 com\tns\leavemgmt\user\service\TeamServiceTest$RemoveUserFromTeam.class
 com\tns\leavemgmt\user\service\TeamServiceTest.class
 com\tns\leavemgmt\leave\service\AccrualServiceTest.class
