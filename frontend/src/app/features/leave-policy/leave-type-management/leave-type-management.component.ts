@@ -146,6 +146,13 @@ import { LeaveType } from '../../../core/models/leave-balance.model';
               </td>
               <td class="cell-actions">
                 <button class="btn-edit" (click)="openEdit(lt)">Edit</button>
+                <button class="btn-toggle"
+                  [class.btn-deactivate]="lt.isActive"
+                  [class.btn-activate]="!lt.isActive"
+                  (click)="toggleStatus(lt)">
+                  {{ lt.isActive ? 'Deactivate' : 'Activate' }}
+                </button>
+                <button class="btn-delete" (click)="confirmDelete(lt)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -315,8 +322,8 @@ import { LeaveType } from '../../../core/models/leave-balance.model';
 
     .btn-edit {
       background: transparent;
-      border: 1px solid var(--color-primary-400, #2A6CB8);
-      color: var(--color-primary-500, #1E4D8C);
+      border: 1px solid #3f476e;
+      color: #3f476e;
       border-radius: 6px;
       padding: 4px 14px;
       font-size: var(--text-sm, 0.875rem);
@@ -325,7 +332,47 @@ import { LeaveType } from '../../../core/models/leave-balance.model';
       transition: background 150ms ease;
     }
 
-    .btn-edit:hover { background: var(--color-primary-50, #E8F2FC); }
+    .btn-edit:hover { background: rgba(63,71,110,0.08); }
+
+    .btn-toggle {
+      border-radius: 6px;
+      padding: 4px 14px;
+      font-size: var(--text-sm, 0.875rem);
+      font-weight: var(--font-medium, 500);
+      cursor: pointer;
+      transition: background 150ms ease;
+      border: 1px solid;
+    }
+
+    .btn-deactivate {
+      background: transparent;
+      border-color: #ff4d00;
+      color: #ff4d00;
+    }
+
+    .btn-deactivate:hover { background: rgba(255,77,0,0.08); }
+
+    .btn-activate {
+      background: transparent;
+      border-color: #A9D08E;
+      color: #2c3e50;
+    }
+
+    .btn-activate:hover { background: rgba(169,208,142,0.15); }
+
+    .btn-delete {
+      background: transparent;
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 4px 14px;
+      font-size: var(--text-sm, 0.875rem);
+      font-weight: var(--font-medium, 500);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .btn-delete:hover { background: rgba(239,68,68,0.08); }
 
     /* Table */
     .table-card {
@@ -382,6 +429,12 @@ import { LeaveType } from '../../../core/models/leave-balance.model';
     }
 
     .cell-num { font-variant-numeric: tabular-nums; }
+
+    .cell-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
 
     /* Status badges */
     .status-badge {
@@ -585,5 +638,21 @@ export class LeaveTypeManagementComponent implements OnInit {
   isInvalid(field: string): boolean {
     const ctrl = this.form.get(field);
     return !!(ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched));
+  }
+
+  toggleStatus(lt: LeaveType): void {
+    const newStatus = !lt.isActive;
+    this.policyService.toggleLeaveTypeStatus(lt.id, newStatus).subscribe({
+      next: () => this.loadLeaveTypes(),
+      error: (err) => alert(err?.error?.message ?? 'Failed to update status.')
+    });
+  }
+
+  confirmDelete(lt: LeaveType): void {
+    if (!confirm(`Delete leave type "${lt.name}"? This will mark it as inactive and it will no longer be accrued for new users.`)) return;
+    this.policyService.deleteLeaveType(lt.id).subscribe({
+      next: () => this.loadLeaveTypes(),
+      error: (err) => alert(err?.error?.message ?? 'Failed to delete leave type.')
+    });
   }
 }
