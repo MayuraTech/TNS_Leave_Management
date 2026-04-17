@@ -19,7 +19,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 # Copy Angular build output (Angular 17 outputs directly to dist/project-name)
-COPY --from=build /app/dist/it-asset-management-frontend ./
+COPY --from=build /app/dist/TNS_Leave_Management-frontend ./
 
 # Copy nginx template (envsubst replaces ${API_URL} at startup)
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
