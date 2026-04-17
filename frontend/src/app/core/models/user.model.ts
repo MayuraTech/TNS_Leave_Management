@@ -13,6 +13,8 @@ export interface User {
   roles: UserRole[];
   departmentId?: number;
   teamId?: number;
+  managerId?: number;
+  managerName?: string;
 }
 
 export interface AuthUser {

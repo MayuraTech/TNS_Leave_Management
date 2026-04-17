@@ -45,6 +45,28 @@ public class LeavePolicyController {
         return ResponseEntity.ok(Map.of("leaveType", leaveType));
     }
 
+    /** DELETE /api/admin/leave-types/{id} — Delete (soft) a leave type (Req 10.1) */
+    @DeleteMapping("/api/admin/leave-types/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<Void> deleteLeaveType(@PathVariable Long id) {
+        leaveTypeService.deleteLeaveType(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** PATCH /api/admin/leave-types/{id}/status — Toggle active/inactive status (Req 10.1) */
+    @PatchMapping("/api/admin/leave-types/{id}/status")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<Map<String, LeaveTypeResponse>> toggleStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> body) {
+        Boolean isActive = body.get("isActive");
+        if (isActive == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        LeaveTypeResponse leaveType = leaveTypeService.setActiveStatus(id, isActive);
+        return ResponseEntity.ok(Map.of("leaveType", leaveType));
+    }
+
     /** GET /api/leave-types — List all active leave types (Req 10.1) */
     @GetMapping("/api/leave-types")
     public ResponseEntity<Map<String, List<LeaveTypeResponse>>> getLeaveTypes() {

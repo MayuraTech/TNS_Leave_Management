@@ -109,6 +109,16 @@ public class LeaveTypeService {
         log.info("Soft-deleted leave type: id={}", id);
     }
 
+    @Transactional
+    public LeaveTypeResponse setActiveStatus(Long id, boolean isActive) {
+        LeaveType leaveType = leaveTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Leave type not found with id: " + id));
+        leaveType.setActive(isActive);
+        leaveType = leaveTypeRepository.save(leaveType);
+        log.info("Set leave type id={} isActive={}", id, isActive);
+        return toResponse(leaveType);
+    }
+
     LeaveTypeResponse toResponse(LeaveType leaveType) {
         return LeaveTypeResponse.builder()
                 .id(leaveType.getId())

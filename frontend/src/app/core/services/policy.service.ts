@@ -16,8 +16,9 @@ export interface LeaveTypePayload {
 
 export interface PublicHoliday {
   id: number;
-  holidayDate: string;
+  date: string;
   name: string;
+  createdAt?: string;
 }
 
 export interface PublicHolidayPayload {
@@ -44,6 +45,14 @@ export class PolicyService {
     return this.api.put<LeaveType>(`/admin/leave-types/${typeId}`, payload);
   }
 
+  deleteLeaveType(typeId: number): Observable<void> {
+    return this.api.delete<void>(`/admin/leave-types/${typeId}`);
+  }
+
+  toggleLeaveTypeStatus(typeId: number, isActive: boolean): Observable<LeaveType> {
+    return this.api.patch<LeaveType>(`/admin/leave-types/${typeId}/status`, { isActive });
+  }
+
   getPublicHolidays(year: number): Observable<PublicHoliday[]> {
     return this.api.get<{holidays: PublicHoliday[]}>('/public-holidays', { year })
       .pipe(map(res => res.holidays));
@@ -61,7 +70,7 @@ export class PolicyService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<{ importedCount: number }>(
-      `${this.baseUrl}/api/admin/public-holidays/import`,
+      `${this.baseUrl}/admin/public-holidays/import`,
       formData
     );
   }

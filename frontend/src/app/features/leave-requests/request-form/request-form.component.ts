@@ -183,13 +183,15 @@ function endDateAfterStartDate(group: AbstractControl): ValidationErrors | null 
     }
 
     .back-link {
-      font-size: 0.875rem;
-      color: #1E4D8C;
-      text-decoration: none;
-      font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px; font-size: 0.85rem; font-weight: 600;
+      text-decoration: none; transition: all 150ms ease;
+      background: var(--color-bg-indigo-light, #d6ddf9);
+      color: var(--color-primary-800, #3f476e);
+      border: 1px solid var(--color-bg-blue-lighter, #b3c3e6);
     }
 
-    .back-link:hover { text-decoration: underline; }
+    .back-link:hover { background: var(--color-bg-blue-lighter, #b3c3e6); transform: translateY(-1px); text-decoration: none; }
 
     .field-group {
       margin-bottom: 20px;

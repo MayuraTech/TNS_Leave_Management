@@ -4,6 +4,7 @@ com\tns\leavemgmt\exception\PolicyViolationException.class
 com\tns\leavemgmt\user\service\DepartmentService.class
 com\tns\leavemgmt\entity\LeaveType.class
 com\tns\leavemgmt\entity\ManagerEmployee$ManagerEmployeeBuilder.class
+com\tns\leavemgmt\user\controller\UserProfileController.class
 com\tns\leavemgmt\dto\TokenResponse.class
 com\tns\leavemgmt\event\LeaveRequestDeniedEvent.class
 com\tns\leavemgmt\entity\enums\SessionType.class
@@ -41,6 +42,7 @@ com\tns\leavemgmt\leave\dto\UpdateLeaveTypeRequest$UpdateLeaveTypeRequestBuilder
 com\tns\leavemgmt\leave\controller\LeavePolicyController.class
 com\tns\leavemgmt\leave\dto\PublicHolidayResponse.class
 com\tns\leavemgmt\leave\service\LeavePolicyService.class
+com\tns\leavemgmt\controller\DashboardController.class
 com\tns\leavemgmt\user\repository\UserRepository.class
 com\tns\leavemgmt\entity\User$UserBuilder.class
 com\tns\leavemgmt\controller\PasswordTestController.class
@@ -110,9 +112,9 @@ com\tns\leavemgmt\user\repository\DepartmentRepository.class
 com\tns\leavemgmt\entity\User.class
 com\tns\leavemgmt\leave\service\PublicHolidayService.class
 com\tns\leavemgmt\leave\service\WorkingDayCalculator.class
-com\tns\leavemgmt\config\SecurityConfig$1.class
 com\tns\leavemgmt\user\dto\UpdateDepartmentRequest.class
 com\tns\leavemgmt\security\PasswordService.class
+com\tns\leavemgmt\dto\TeamCapacityResponse$TeamCapacityResponseBuilder.class
 com\tns\leavemgmt\user\dto\CreateTeamRequest.class
 com\tns\leavemgmt\event\LeaveRequestApprovedEvent.class
 com\tns\leavemgmt\repository\LeaveRequestRepository.class
@@ -166,4 +168,5 @@ com\tns\leavemgmt\user\dto\TeamResponse$TeamResponseBuilder.class
 com\tns\leavemgmt\entity\Department$DepartmentBuilder.class
 com\tns\leavemgmt\user\dto\AssignUserToDepartmentRequest.class
 com\tns\leavemgmt\security\JwtTokenProvider.class
+com\tns\leavemgmt\dto\TeamCapacityResponse.class
 com\tns\leavemgmt\notification\LoggingNotificationService.class

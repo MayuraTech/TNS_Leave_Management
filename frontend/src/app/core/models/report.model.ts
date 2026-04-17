@@ -1,16 +1,13 @@
 export interface LeaveUsageReportItem {
-  employeeId: number;
-  employeeName: string;
-  departmentName: string;
   leaveTypeName: string;
+  totalRequests: number;
   totalDays: number;
-  requestCount: number;
 }
 
 export interface LeaveBalanceReportItem {
   employeeId: number;
   employeeName: string;
-  departmentName: string;
+  department: string;
   leaveTypeName: string;
   availableDays: number;
   usedDays: number;

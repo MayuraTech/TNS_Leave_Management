@@ -1,2 +1,6 @@
 <app-header></app-header>
-<router-outlet />
+<app-sidebar></app-sidebar>
+<app-toast></app-toast>
+<div class="main-content" [class.sidebar-open]="isSidebarOpen">
+  <router-outlet />
+</div>

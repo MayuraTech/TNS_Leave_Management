@@ -1,15 +1,19 @@
-<nav class="sidebar">
-  <ul class="nav-list">
-    <li *ngFor="let item of visibleItems" class="nav-item">
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: item.route === '/leave' }"
-        class="nav-link"
-      >
-        <span class="nav-icon">{{ item.icon }}</span>
-        <span class="nav-label">{{ item.label }}</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+<!-- Overlay for mobile -->
+<div class="sidebar-overlay" *ngIf="isOpen" (click)="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="isOpen" *ngIf="currentUser">
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let item of visibleItems"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? true }"
+      class="nav-item"
+      (click)="closeSidebar()">
+      <span class="nav-icon">{{ item.icon }}</span>
+      <span class="nav-label">{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

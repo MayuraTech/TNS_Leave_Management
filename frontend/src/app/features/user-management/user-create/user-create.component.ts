@@ -137,8 +137,15 @@ const ALL_ROLES: UserRole[] = ['EMPLOYEE', 'MANAGER', 'ADMINISTRATOR'];
     .page-container { padding: 1.5rem 2rem; max-width: 800px; margin: 0 auto; }
 
     .page-header { margin-bottom: 1.5rem; }
-    .back-link { color: #4f46e5; text-decoration: none; font-size: 0.875rem; }
-    .back-link:hover { text-decoration: underline; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px; font-size: 0.85rem; font-weight: 600;
+      text-decoration: none; transition: all 150ms ease;
+      background: var(--color-bg-indigo-light, #d6ddf9);
+      color: var(--color-primary-800, #3f476e);
+      border: 1px solid var(--color-bg-blue-lighter, #b3c3e6);
+    }
+    .back-link:hover { background: var(--color-bg-blue-lighter, #b3c3e6); transform: translateY(-1px); text-decoration: none; }
     .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; margin: 0.5rem 0 0; }
 
     .form-card {

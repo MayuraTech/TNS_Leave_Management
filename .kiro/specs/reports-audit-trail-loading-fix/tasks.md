@@ -1,0 +1,113 @@
+# Implementation Plan
+
+- [ ] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Audit Log Lazy Initialization Exception
+  - **CRITICAL**: This test MUST FAIL on unfixed code - failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior - it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the LazyInitializationException occurs when serializing audit logs with lazy-loaded User relationships
+  - **Scoped PBT Approach**: Scope the property to concrete failing cases - audit log queries that return entities with lazy `performedBy` relationships
+  - Test that GET /api/admin/audit returns serializable JSON without LazyInitializationException
+  - Test that GET /api/admin/audit?userId=1&actionType=CREATE returns serializable JSON without LazyInitializationException
+  - The test assertions should verify: response.statusCode == 200, response.body is valid JSON, no LazyInitializationException thrown, response.body contains audit log data with performedBy.username accessible
+  - Run test on UNFIXED code
+  - **EXPECTED OUTCOME**: Test FAILS with LazyInitializationException: could not initialize proxy [com.tns.leavemgmt.entity.User#X] - no Session (this is correct - it proves the bug exists)
+  - Document counterexamples found to understand root cause (e.g., "GET /api/admin/audit throws LazyInitializationException when Jackson tries to serialize performedBy.username")
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 2.1, 2.2_
+
+- [ ] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Query Behavior and Data Accuracy
+  - **IMPORTANT**: Follow observation-first methodology
+  - Observe behavior on UNFIXED code for non-buggy operations:
+    - Audit log creation via AuditService.recordAudit() persists records successfully
+    - Audit log filtering by userId, actionType, date range returns correct filtered results
+    - Pagination parameters return correct page numbers, sizes, and total counts
+    - Report endpoints return accurate aggregated data (leave usage totals, balance calculations)
+    - Non-admin users receive 403 Forbidden responses
+  - Write property-based tests capturing observed behavior patterns:
+    - For all audit log creation requests, records are persisted with correct data
+    - For all audit log queries with filters, results match the filter criteria
+    - For all pagination requests, page metadata is accurate
+    - For all report queries, aggregated data matches expected calculations
+    - For all unauthorized requests, 403 responses are returned
+  - Property-based testing generates many test cases for stronger guarantees
+  - Run tests on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (this confirms baseline behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
+
+- [-] 3. Fix for Hibernate LazyInitializationException in Reports and Audit Trail
+
+  - [x] 3.1 Add EntityGraph query method to AuditLogRepository
+    - Open backend/src/main/java/com/tns/leavemgmt/repository/AuditLogRepository.java
+    - Add method: `@EntityGraph(attributePaths = {"performedBy"}) Page<AuditLog> findAllWithPerformedBy(Specification<AuditLog> spec, Pageable pageable);`
+    - This eagerly fetches the User relationship within the transaction boundary
+    - _Bug_Condition: isBugCondition(input) where input.endpoint == "/api/admin/audit" AND queryReturnsEntitiesWithLazyRelationships(input) AND jacksonSerializationAttemptsToAccessLazyProxy() AND hibernateSessionIsClosed()_
+    - _Expected_Behavior: For any HTTP request to /api/admin/audit, the fixed code SHALL eagerly fetch all relationships required for serialization within the transaction boundary, preventing LazyInitializationException_
+    - _Preservation: Audit log filtering, pagination, security, and data accuracy must remain unchanged_
+    - _Requirements: 2.1, 2.2, 3.1, 3.2_
+
+  - [x] 3.2 Update AuditService to use EntityGraph query method
+    - Open backend/src/main/java/com/tns/leavemgmt/service/AuditService.java
+    - Locate the queryAuditLogs() method
+    - Replace `auditLogRepository.findAll(spec, pageable)` with `auditLogRepository.findAllWithPerformedBy(spec, pageable)`
+    - This ensures the User relationship is eagerly fetched before the transaction closes
+    - No changes to the Specification logic or filtering behavior
+    - _Bug_Condition: isBugCondition(input) where audit logs are returned with lazy-loaded performedBy relationships_
+    - _Expected_Behavior: All required relationships are loaded within the transaction boundary before serialization_
+    - _Preservation: Existing filtering, pagination, and query logic must remain unchanged_
+    - _Requirements: 2.1, 2.2, 3.1, 3.2_
+
+  - [x] 3.3 Verify and fix LeaveRequest entity fetch types (if needed)
+    - Open backend/src/main/java/com/tns/leavemgmt/entity/LeaveRequest.java
+    - Check if employee, leaveType, and other relationships used in reports have appropriate fetch types
+    - If they are LAZY and cause issues in report endpoints, document the findings
+    - If issues are found, add EntityGraph queries in LeaveRequestRepository for report methods
+    - Ensure LeaveReportService methods access all required relationships within the transaction
+    - _Bug_Condition: isBugCondition(input) where input.endpoint STARTS_WITH "/api/admin/reports/" AND report entities have lazy relationships_
+    - _Expected_Behavior: Report endpoints return data with all necessary relationships properly loaded_
+    - _Preservation: Report filtering, data accuracy, and aggregation logic must remain unchanged_
+    - _Requirements: 2.3, 2.4, 3.4_
+
+  - [x] 3.4 Verify and fix LeaveBalance entity fetch types (if needed)
+    - Open backend/src/main/java/com/tns/leavemgmt/entity/LeaveBalance.java
+    - Check if user, leaveType, and user.department relationships have appropriate fetch types
+    - If they are LAZY and cause issues in report endpoints, document the findings
+    - If issues are found, add EntityGraph queries in LeaveBalanceRepository for report methods
+    - Ensure LeaveReportService methods access all required relationships within the transaction
+    - _Bug_Condition: isBugCondition(input) where leave balance reports have lazy relationships_
+    - _Expected_Behavior: Leave balance reports return data with all necessary relationships properly loaded_
+    - _Preservation: Report filtering, data accuracy, and aggregation logic must remain unchanged_
+    - _Requirements: 2.3, 2.4, 3.4_
+
+  - [ ] 3.5 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Audit Log Serialization Success
+    - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
+    - The test from task 1 encodes the expected behavior
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run bug condition exploration test from step 1
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed - audit logs serialize without LazyInitializationException)
+    - Verify that GET /api/admin/audit returns 200 with valid JSON containing audit log data
+    - Verify that performedBy.username is accessible in the response
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+
+  - [ ] 3.6 Verify preservation tests still pass
+    - **Property 2: Preservation** - Query Behavior and Data Accuracy
+    - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
+    - Run preservation property tests from step 2
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions)
+    - Confirm all tests still pass after fix:
+      - Audit log creation persists records correctly
+      - Filtering by userId, actionType, date range returns correct results
+      - Pagination returns correct page metadata
+      - Report data accuracy is maintained
+      - Security enforcement continues to work
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
+
+- [ ] 4. Checkpoint - Ensure all tests pass
+  - Run all exploration and preservation tests
+  - Verify no LazyInitializationException occurs in audit or report endpoints
+  - Verify all existing functionality (filtering, pagination, security, data accuracy) is preserved
+  - Test the frontend to ensure Reports and Audit Trail pages load successfully
+  - Ask the user if questions arise or if manual testing reveals additional issues

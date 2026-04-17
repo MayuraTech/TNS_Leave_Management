@@ -6,6 +6,7 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { UserService, Department } from '../../../core/services/user.service';
 import { User, UserRole } from '../../../core/models/user.model';
 import { NotificationService } from '../../../core/services/notification.service';
+import { UserBalanceAdjustmentComponent } from '../user-balance-adjustment/user-balance-adjustment.component';
 
 const ALL_ROLES: UserRole[] = ['EMPLOYEE', 'MANAGER', 'ADMINISTRATOR'];
 
@@ -18,7 +19,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, UserBalanceAdjustmentComponent],
   template: `
     <div class="page-container">
       <div class="page-header">
@@ -196,6 +197,9 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
           </form>
         </div>
 
+        <!-- Leave Balance Adjustment Section -->
+        <app-user-balance-adjustment [userId]="userId"></app-user-balance-adjustment>
+
       </ng-container>
     </div>
   `,
@@ -203,8 +207,15 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
     .page-container { padding: 1.5rem 2rem; max-width: 800px; margin: 0 auto; }
 
     .page-header { margin-bottom: 1.5rem; }
-    .back-link { color: #4f46e5; text-decoration: none; font-size: 0.875rem; }
-    .back-link:hover { text-decoration: underline; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px; font-size: 0.85rem; font-weight: 600;
+      text-decoration: none; transition: all 150ms ease;
+      background: var(--color-bg-indigo-light, #d6ddf9);
+      color: var(--color-primary-800, #3f476e);
+      border: 1px solid var(--color-bg-blue-lighter, #b3c3e6);
+    }
+    .back-link:hover { background: var(--color-bg-blue-lighter, #b3c3e6); transform: translateY(-1px); text-decoration: none; }
     .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; margin: 0.5rem 0 0; }
 
     .form-card {
@@ -324,7 +335,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
   isResettingPassword = false;
   passwordError = '';
 
-  private userId!: number;
+  userId!: number;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -395,7 +406,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
 
     this.rolesForm.patchValue({
       departmentId: user.departmentId ?? '',
-      managerId: user.teamId ?? ''
+      managerId: user.managerId ?? ''
     });
   }
 

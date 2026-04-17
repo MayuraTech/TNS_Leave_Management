@@ -16,7 +16,7 @@ import java.util.Optional;
 public class AuthenticationService {
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
-    private static final int LOCKOUT_MINUTES = 15;
+    private static final int LOCKOUT_MINUTES = 1;
 
     private final UserRepository userRepository;
 

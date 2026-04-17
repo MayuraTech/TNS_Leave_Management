@@ -52,6 +52,7 @@ import { User } from '../../../core/models/user.model';
               <th>Email</th>
               <th>Roles</th>
               <th>Department</th>
+              <th>Manager</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -67,17 +68,18 @@ import { User } from '../../../core/models/user.model';
                 </span>
               </td>
               <td>{{ getDepartmentName(user.departmentId) }}</td>
+              <td>{{ user.managerName || '—' }}</td>
               <td>
                 <span class="status-badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
                   {{ user.isActive ? 'Active' : 'Inactive' }}
                 </span>
               </td>
               <td>
-                <a [routerLink]="['/admin/users/users', user.id, 'edit']" class="btn-link">Edit</a>
+                <a [routerLink]="['/admin/users/users', user.id, 'edit']" class="btn-edit">✏ Edit</a>
               </td>
             </tr>
             <tr *ngIf="users.length === 0">
-              <td colspan="7" class="empty-state">No users found.</td>
+              <td colspan="8" class="empty-state">No users found.</td>
             </tr>
           </tbody>
         </table>
@@ -144,6 +146,18 @@ import { User } from '../../../core/models/user.model';
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:hover td { background: #f9fafb; }
 
+    /* Sticky Actions column */
+    .data-table th:last-child,
+    .data-table td:last-child {
+      position: sticky;
+      right: 0;
+      background: #fff;
+      box-shadow: -2px 0 6px rgba(63, 71, 110, 0.06);
+      z-index: 1;
+    }
+    .data-table th:last-child { background: #f9fafb; }
+    .data-table tr:hover td:last-child { background: #f9fafb; }
+
     .role-badge {
       display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
       font-size: 0.75rem; font-weight: 600; margin-right: 0.25rem;
@@ -159,8 +173,17 @@ import { User } from '../../../core/models/user.model';
     .status-badge.active { background: #d1fae5; color: #065f46; }
     .status-badge.inactive { background: #f3f4f6; color: #6b7280; }
 
-    .btn-link { color: #4f46e5; text-decoration: none; font-size: 0.875rem; font-weight: 500; }
-    .btn-link:hover { text-decoration: underline; }
+    .btn-edit {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 150ms ease; text-decoration: none;
+      white-space: nowrap;
+      background: var(--color-bg-indigo-light, #d6ddf9);
+      color: var(--color-primary-800, #3f476e);
+      border: 1px solid var(--color-bg-blue-lighter, #b3c3e6);
+      &:hover { background: var(--color-bg-blue-lighter, #b3c3e6); transform: translateY(-1px); text-decoration: none; }
+      &:active { transform: scale(0.97); }
+    }
 
     .empty-state { text-align: center; color: #9ca3af; padding: 2rem; }
 
