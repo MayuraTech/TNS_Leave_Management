@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://10.0.2.134:5432/Interns%20Training%20Database}
-    username: ${DB_USERNAME:Saravanan}
-    password: ${DB_PASSWORD:@dmin@123}
+    url: ${DB_URL:jdbc:postgresql://fileracks-pg-db.tnssinc.com:5432/postgres}
+    username: ${DB_USERNAME:surya}
+    password: ${DB_PASSWORD:SpTnS@12345}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -39,7 +39,7 @@ app:
     secret: ${JWT_SECRET:your-256-bit-secret-key-here-change-in-production}
     expiration: ${JWT_EXPIRATION:1800000}
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://tns-leave-application-alb-1905426526.us-west-2.elb.amazonaws.com}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,http://tns-leave-application-alb-1905426526.us-west-2.elb.amazonaws.com}
 
 management:
   endpoints:
