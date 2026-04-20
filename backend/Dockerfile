@@ -33,8 +33,8 @@ RUN chown appuser:appgroup app.jar
 
 USER appuser
 
-# Actuator health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+# Actuator health check - increased start-period for DB connection time
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 EXPOSE 8080
