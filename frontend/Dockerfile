@@ -25,7 +25,12 @@ COPY --from=build /app/dist/frontend/browser ./
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Default API URL — override via ECS task definition env var
-ENV API_URL=http://localhost:8080
+ENV API_URL=http://tns-leave-application-alb-1905426526.us-west-2.elb.amazonaws.com
+
+# Ensure nginx can write temp files
+RUN mkdir -p /var/cache/nginx /var/run && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chmod -R 755 /usr/share/nginx/html
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD wget -qO- http://localhost:80/ || exit 1
