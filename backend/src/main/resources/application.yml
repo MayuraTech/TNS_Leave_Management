@@ -56,6 +56,8 @@ management:
   health:
     db:
       enabled: false
+    defaults:
+      enabled: false
 
 springdoc:
   api-docs:
