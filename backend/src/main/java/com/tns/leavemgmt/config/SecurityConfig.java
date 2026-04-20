@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
 
-    @Value("${app.cors.allowed-origins:http://localhost:4200}")
+    @Value("${app.cors.allowed-origins:http://tns-leave-application-alb-1905426526.us-west-2.elb.amazonaws.com}")
     private String allowedOrigins;
 
     @Bean
