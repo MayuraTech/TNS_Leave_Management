@@ -1,5 +1,10 @@
 server:
   port: ${SERVER_PORT:8080}
+  tomcat:
+    connection-timeout: 20000
+    threads:
+      max: 50
+      min-spare: 5
 
 spring:
   datasource:
@@ -9,11 +14,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 20000
-      maximum-pool-size: 5
-      minimum-idle: 2
+      maximum-pool-size: 3
+      minimum-idle: 1
       idle-timeout: 300000
       max-lifetime: 1200000
       connection-test-query: SELECT 1
+      keepalive-time: 60000
 
   jpa:
     hibernate:
